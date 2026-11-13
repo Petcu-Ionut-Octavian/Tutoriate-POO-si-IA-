@@ -1,0 +1,142 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class Produs {
+private:
+    string nume;
+    int pret;
+
+public:
+    Produs(string n, int p)
+        : nume(n), pret(p) {}
+
+    string getNume() const {
+        return nume;
+    }
+
+    int getPret() const {
+        return pret;
+    }
+};
+
+class Card {
+private:
+    string posesor;
+    int bani;
+
+public:
+    Card(string p, int b)
+        : posesor(p), bani(b) {}
+
+    bool buy(const Produs& produs) {
+
+        if (bani >= produs.getPret()) {
+            bani -= produs.getPret();
+            return true;
+        }
+
+        return false;
+    }
+
+    void afiseazaSold() const {
+        cout << posesor << " are "
+             << bani
+             << " lei.\n";
+    }
+};
+
+class Persoana {
+private:
+    string nume;
+    Card card;
+    vector<Produs> produse;
+
+public:
+    Persoana(string n, Card c)
+        : nume(n), card(c) {}
+
+    void cumpara(const Produs& produs) {
+
+        if (card.buy(produs)) {
+
+            produse.push_back(produs);
+
+            cout << nume
+                 << " a cumparat "
+                 << produs.getNume()
+                 << ".\n";
+        }
+        else {
+
+            cout << nume
+                 << " nu are suficienti bani.\n";
+        }
+    }
+
+    void afiseazaProduse() const {
+
+        cout << "\nProdusele lui "
+             << nume
+             << ":\n";
+
+        for (const auto& produs : produse) {
+            cout << "- "
+                 << produs.getNume()
+                 << '\n';
+        }
+    }
+
+    void afiseazaSold() const {
+        card.afiseazaSold();
+    }
+};
+
+class Magazin {
+public:
+
+    static Produs creeazaLaptop() {
+        return Produs("Laptop", 3500);
+    }
+
+    static Produs creeazaMouse() {
+        return Produs("Mouse", 120);
+    }
+
+    static Produs creeazaCasti() {
+        return Produs("Casti", 250);
+    }
+
+    static Produs creeazaMonitor() {
+        return Produs("Monitor", 1000);
+    }
+};
+
+int main() {
+
+    Card card("Ion", 5000);
+
+    Persoana persoana("Ion", card);
+
+    Produs laptop = Magazin::creeazaLaptop();
+    Produs mouse = Magazin::creeazaMouse();
+    Produs casti = Magazin::creeazaCasti();
+    Produs monitor = Magazin::creeazaMonitor();
+
+    persoana.cumpara(mouse);
+    persoana.cumpara(casti);
+    persoana.cumpara(monitor);
+    persoana.cumpara(laptop);
+
+    cout << '\n';
+
+    persoana.afiseazaProduse();
+
+    cout << '\n';
+
+    persoana.afiseazaSold();
+
+    return 0;
+}

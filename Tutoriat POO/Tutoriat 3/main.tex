@@ -1,0 +1,1390 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 3\\Moștenire și Compunere}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Moștenire}
+
+Moștenirea (inheritance) reprezintă mecanismul prin care o clasă poate fi extinsă prin crearea altor clase care moștenesc proprietățile și comportamentele acesteia. În C++, moștenirea este unul dintre cele trei principii fundamentale ale programării orientate pe obiecte. Ea permite reutilizarea codului și modelarea relațiilor dintre obiecte.
+
+Prin moștenire apar două noțiuni importante:
+
+\begin{itemize}
+\item clasa de bază (base class);
+\item clasa derivată (derived class).
+\end{itemize}
+
+\subsection{Clasa de bază vs clasa derivată}
+
+Clasa de bază este clasa DIN care se moștenește, iar clasa derivată este clasa CARE moștenește.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+};
+
+class Dog : Animal {
+};
+\end{verbatim}
+
+În exemplul de mai sus, clasa Animal este clasa de bază, iar clasa Dog este clasa derivată.
+
+Moștenirea se realizează prin simbolul ":" pus între numele clasei derivate și clasa de bază.
+
+\subsection{Transmiterea datelor și metodelor}
+
+Moștenirea presupune transmiterea atributelor și metodelor din clasa de bază către clasa derivată, conform regulilor specifice tipului de moștenire utilizat.
+
+Astfel, clasa derivată poate reutiliza funcționalitatea existentă fără a fi necesară rescrierea codului.
+
+\subsection{Observație importantă}
+
+\textbf{Tot ceea ce este private în clasa de bază devine inaccesibil în clasa derivată.} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Moștenire vs Compunere}
+
+Înainte de a putea avansa, trebuie stabilită cu certitudine distincția dintre moștenire și compunere. 
+
+Compunerea reprezintă procedeul prin care un obiect de tipul unei clase este declarat ca atribut al altei clase.
+
+Exemplu:
+
+\begin{verbatim}
+class Student {
+};
+
+class Facultate {
+    Student studenti[100];
+};
+\end{verbatim}
+
+În acest caz, clasa Facultate conține obiecte de tip Student. Acest procedeu poartă numele de compunere.
+
+\subsection{Relația IS A}
+
+O clasă D moștenește o clasă B dacă putem spune:
+
+"D ESTE (IS A) un obiect de tip B".
+
+Exemple:
+
+\begin{itemize}
+\item Pătratul este o Formă Geometrică;
+\item Câinele este un Animal;
+\item Studentul este o Persoană.
+\end{itemize}
+
+\subsection{Relația HAS A}
+
+O clasă D aparține unei clase B dacă putem spune:
+
+"B ARE (HAS A) un obiect de tip D".
+
+Exemple:
+
+\begin{itemize}
+\item O Facultate are Studenți și Profesori;
+\item O Firmă are Angajați și Directori;
+\item O Mașină are un Motor.
+\end{itemize}
+
+\subsection{Cum alegem între moștenire și compunere?}
+
+În proiectarea claselor este foarte important să alegem corect relația dintre obiecte. De multe ori suntem tentați să folosim moștenirea când nu este necesară sau, invers, să folosim compunerea când relația naturală este de moștenire.
+
+Pentru a lua decizia corectă, ne putem pune două întrebări:
+
+\begin{itemize}
+\item Obiectul derivat ESTE un obiect de tipul celuilalt? (IS A)
+\item Obiectul conține sau ARE un obiect de tipul celuilalt? (HAS A)
+\end{itemize}
+
+Dacă răspunsul este IS A, folosim moștenirea.
+
+Dacă răspunsul este HAS A, folosim compunerea.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Tipuri de moștenire}
+
+În C++, există trei tipuri principale de moștenire:
+
+\begin{itemize}
+\item moștenire private;
+\item moștenire protected;
+\item moștenire public.
+\end{itemize}
+
+Aceste tipuri determină modul în care membrii clasei de bază sunt preluați în clasa derivată.
+
+\subsection{Moștenire private}
+
+La moștenirea private, tot ceea ce nu este private în clasa de bază devine private în clasa derivată.
+
+Datele și metodele private din clasa de bază rămân inaccesibile.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+};
+
+class Dog : private Animal {
+};
+\end{verbatim}
+
+Dacă nu specificăm niciun modificator după simbolul :, moștenirea este implicit private.
+
+Astfel, următoarele declarații sunt echivalente:
+
+\begin{verbatim}
+class Dog : Animal {
+};
+
+class Dog : private Animal {
+};
+\end{verbatim}
+
+\subsection{Moștenire protected}
+
+La moștenirea protected, tot ceea ce nu este private în clasa de bază devine protected în clasa derivată.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+};
+
+class Dog : protected Animal {
+};
+\end{verbatim}
+
+\subsection{Moștenire public}
+
+Moștenirea public este cea mai utilizată în practică.
+
+Membrii public rămân public.
+
+Membrii protected rămân protected.
+
+Membrii private rămân inaccesibili.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+};
+
+class Dog : public Animal {
+};
+\end{verbatim}
+
+\subsection{Comparație între tipurile de moștenire}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Membru bază & public & protected & private \\
+\hline
+public & public & protected & private \\
+\hline
+protected & protected & protected & private \\
+\hline
+private & inaccesibil & inaccesibil & inaccesibil \\
+\hline
+\end{tabular}
+\end{center}
+
+De reținut:
+
+\begin{itemize}
+\item moștenirea public păstrează nivelele de acces;
+\item moștenirea protected transformă public în protected;
+\item moștenirea private transformă totul în private;
+\item membrii private ai clasei de bază nu sunt niciodată accesibili direct în clasa derivată.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Constructori în moștenire}
+
+Atunci când lucrăm cu moștenirea, trebuie să fim atenți la modul în care sunt apelați constructorii și destructorii claselor implicate.
+
+\subsection{Ordinea apelării constructorilor}
+
+La crearea unui obiect dintr-o clasă derivată, constructorul clasei de bază este apelat primul.
+
+Abia după finalizarea acestuia este executat constructorul clasei derivate.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+public:
+    Animal() {
+        cout << "Animal";
+    }
+};
+
+class Dog : public Animal {
+public:
+    Dog() {
+        cout << " Dog";
+    }
+};
+\end{verbatim}
+
+Pentru instrucțiunea:
+
+\begin{verbatim}
+Dog d;
+\end{verbatim}
+
+se va afișa:
+
+\begin{verbatim}
+Animal Dog
+\end{verbatim}
+
+\subsection{Ordinea apelării destructorilor}
+
+Destructorii sunt apelați în ordinea inversă constructorilor.
+
+Mai întâi este distrusă partea derivată, apoi partea de bază.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+public:
+    ~Animal() {
+        cout << "Animal";
+    }
+};
+
+class Dog : public Animal {
+public:
+    ~Dog() {
+        cout << " Dog";
+    }
+};
+\end{verbatim}
+
+La distrugerea obiectului se va afișa:
+
+\begin{verbatim}
+Dog Animal
+\end{verbatim}
+
+\subsection{Regula fundamentală}
+
+Constructorii se apelează de la bază către derivată.
+
+Destructorii se apelează de la derivată către bază.
+
+\subsection{Observație}
+
+Această regulă este valabilă indiferent de tipul de moștenire utilizat:
+
+\begin{itemize}
+\item public;
+\item protected;
+\item private.
+\end{itemize}
+
+Tipul moștenirii influențează accesibilitatea membrilor, dar nu modifică ordinea apelării constructorilor și destructorilor.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Apelarea constructorilor din clasa de bază}
+
+În multe situații, clasa de bază nu dispune de un constructor fără parametri. În acest caz, constructorul clasei derivate trebuie să apeleze explicit constructorul clasei de bază.
+
+\subsection{Constructor implicit}
+
+Dacă în clasa de bază există un constructor fără parametri, acesta este apelat automat la crearea unui obiect din clasa derivată.
+
+Exemplu:
+
+\begin{verbatim}
+class Baza {
+public:
+    Baza() {
+        cout << "Baza";
+    }
+};
+
+class Derivata : public Baza {
+};
+\end{verbatim}
+
+La crearea unui obiect de tip Derivata se apelează automat constructorul clasei Baza.
+
+\subsection{Constructor parametrizat}
+
+Dacă clasa de bază conține numai constructori cu parametri, constructorul corespunzător trebuie apelat explicit.
+
+Exemplu:
+
+\begin{verbatim}
+class Baza {
+public:
+    Baza(int x) {
+        cout << x;
+    }
+};
+
+class Derivata : public Baza {
+public:
+    Derivata() : Baza(10) {
+    }
+};
+\end{verbatim}
+
+În acest caz, constructorul Baza(10) este apelat înaintea executării corpului constructorului clasei Derivata.
+
+\subsection{Lista de inițializare}
+
+Apelarea constructorilor claselor de bază se face prin lista de inițializare.
+
+Sintaxa generală este:
+
+\begin{verbatim}
+class Derivata : public Baza {
+public:
+    Derivata(...) : Baza(...) {
+    }
+};
+\end{verbatim}
+
+Lista de inițializare se scrie după antetul constructorului și înaintea corpului acestuia.
+
+\subsection{Ordinea apelurilor}
+
+Chiar dacă în lista de inițializare apar mai multe obiecte, constructorul clasei de bază este întotdeauna executat înaintea constructorului clasei derivate.
+
+Ordinea este:
+
+\begin{enumerate}
+\item constructorii claselor de bază;
+\item constructorii atributelor obiect;
+\item constructorul clasei derivate.
+\end{enumerate}
+
+\subsection{Eroare frecventă}
+
+Următorul exemplu nu compilează:
+
+\begin{verbatim}
+class Baza {
+public:
+    Baza(int x) {
+    }
+};
+
+class Derivata : public Baza {
+public:
+    Derivata() {
+    }
+};
+\end{verbatim}
+
+Motivul este că Baza nu are constructor implicit, iar constructorul parametrizat nu este apelat.
+
+Corect:
+
+\begin{verbatim}
+class Derivata : public Baza {
+public:
+    Derivata() : Baza(5) {
+    }
+};
+\end{verbatim}
+
+\subsection{De reținut}
+
+\begin{itemize}
+\item constructorii claselor de bază se execută înaintea constructorului clasei derivate;
+\item apelarea explicită se face în lista de inițializare;
+\item dacă baza nu are constructor implicit, trebuie apelat un constructor parametrizat;
+\item omisiunea apelului unui constructor necesar produce eroare de compilare.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Moștenire multiplă}
+
+Moștenirea multiplă reprezintă posibilitatea unei clase de a moșteni simultan mai multe clase de bază.
+
+Astfel, o clasă derivată poate prelua atribute și metode din mai multe surse.
+
+\subsection{Sintaxa moștenirii multiple}
+
+Forma generală este:
+
+\begin{verbatim}
+class Derivata : public Baza1,
+                 public Baza2,
+                 ...
+{
+};
+\end{verbatim}
+
+O clasă poate moșteni oricâte clase de bază sunt necesare.
+
+\subsection{Exemplu simplu}
+
+\begin{verbatim}
+class Student {
+};
+
+class Angajat {
+};
+
+class Asistent :
+    public Student,
+    public Angajat
+{
+};
+\end{verbatim}
+
+Clasa Asistent moștenește atât caracteristicile unui Student, cât și pe cele ale unui Angajat.
+
+\subsection{Ordinea apelării constructorilor}
+
+Constructorii claselor de bază sunt apelați înaintea constructorului clasei derivate.
+
+Ordinea apelării este dată de ordinea claselor din lista de moștenire.
+
+\begin{verbatim}
+class A {
+public:
+    A() { cout << "A "; }
+};
+
+class B {
+public:
+    B() { cout << "B "; }
+};
+
+class C : public A, public B {
+public:
+    C() { cout << "C"; }
+};
+\end{verbatim}
+
+Pentru:
+
+\begin{verbatim}
+C obiect;
+\end{verbatim}
+
+se va afișa:
+
+\begin{verbatim}
+A B C
+\end{verbatim}
+
+\subsection{Ordinea apelării destructorilor}
+
+Destructorii sunt executați în ordine inversă.
+
+Pentru exemplul anterior:
+
+\begin{verbatim}
+C B A
+\end{verbatim}
+
+\subsection{Lista de inițializare}
+
+Constructorii claselor de bază pot fi apelați explicit folosind lista de inițializare.
+
+\begin{verbatim}
+class C : public A, public B {
+public:
+    C() : A(), B() {
+    }
+};
+\end{verbatim}
+
+\subsection{Observație importantă}
+
+Ordinea apelurilor NU este determinată de ordinea din lista de inițializare, ci de ordinea claselor din declarația moștenirii.
+
+\begin{verbatim}
+class C : public A, public B {
+public:
+    C() : B(), A() {
+    }
+};
+\end{verbatim}
+
+Chiar și în acest caz, constructorul lui A va fi apelat înaintea constructorului lui B.
+
+\subsection{Ambiguități}
+
+În moștenirea multiplă pot apărea ambiguități atunci când două clase de bază conțin membri cu același nume.
+
+\begin{verbatim}
+class A {
+public:
+    void f() {}
+};
+
+class B {
+public:
+    void f() {}
+};
+
+class C : public A, public B {
+};
+\end{verbatim}
+
+Apelul:
+
+\begin{verbatim}
+C c;
+c.f();
+\end{verbatim}
+
+produce eroare deoarece compilatorul nu știe dacă trebuie apelată funcția din A sau cea din B.
+
+Rezolvarea:
+
+\begin{verbatim}
+c.A::f();
+c.B::f();
+\end{verbatim}
+
+\subsection{Avantaje și dezavantaje}
+
+Avantaje:
+
+\begin{itemize}
+\item reutilizare crescută a codului;
+\item modelarea unor relații complexe;
+\item combinarea funcționalităților mai multor clase.
+\end{itemize}
+
+Dezavantaje:
+
+\begin{itemize}
+\item apariția ambiguităților;
+\item cod mai greu de întreținut;
+\item ierarhii mai dificil de urmărit.
+\end{itemize}
+
+\subsection{De reținut}
+
+\begin{itemize}
+\item o clasă poate moșteni mai multe clase de bază;
+\item constructorii se execută în ordinea claselor din lista de moștenire;
+\item destructorii se execută în ordine inversă;
+\item pot apărea ambiguități atunci când două clase de bază au membri cu același nume;
+\item membrii ambigui se accesează folosind operatorul de rezoluție a domeniului (::).
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Probleme frecvente cu moștenirea}
+
+Deși moștenirea simplifică reutilizarea codului, utilizarea incorectă a acesteia poate conduce la erori de compilare sau la proiectarea defectuoasă a claselor.
+
+\subsection{Accesarea membrilor private}
+
+Una dintre cele mai întâlnite greșeli este încercarea accesării directe a atributelor private din clasa de bază.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+private:
+    int varsta;
+};
+
+class Dog : public Animal {
+public:
+    void f() {
+        varsta = 5;
+    }
+};
+\end{verbatim}
+
+Codul nu compilează deoarece membrul varsta este private în clasa de bază.
+
+\subsection{Utilizarea lui protected}
+
+Dacă dorim ca membrii să fie accesibili și în clasele derivate, putem utiliza protected.
+
+\begin{verbatim}
+class Animal {
+protected:
+    int varsta;
+};
+
+class Dog : public Animal {
+public:
+    void f() {
+        varsta = 5;
+    }
+};
+\end{verbatim}
+
+Membrii protected nu sunt accesibili din exterior, dar sunt accesibili în clasele derivate.
+
+\subsection{Alegerea greșită a tipului de moștenire}
+
+Mulți programatori folosesc moștenirea private atunci când intenția era moștenirea public.
+
+Exemplu:
+
+\begin{verbatim}
+class Animal {
+public:
+    void mananca() {}
+};
+
+class Dog : private Animal {
+};
+\end{verbatim}
+
+În acest caz, relația "Dog este un Animal" nu mai este vizibilă din exterior.
+
+Pentru relația IS A se recomandă utilizarea moștenirii public.
+
+\subsection{Confuzia dintre IS A și HAS A}
+
+O altă greșeală frecventă este folosirea moștenirii acolo unde trebuia folosită compunerea.
+
+Greșit:
+
+\begin{verbatim}
+class Motor {
+};
+
+class Masina : public Motor {
+};
+\end{verbatim}
+
+O mașină nu este un motor.
+
+Corect:
+
+\begin{verbatim}
+class Motor {
+};
+
+class Masina {
+    Motor motor;
+};
+\end{verbatim}
+
+O mașină are un motor.
+
+\subsection{Uitarea apelării constructorului bazei}
+
+Dacă baza nu are constructor implicit, constructorul potrivit trebuie apelat explicit.
+
+Greșit:
+
+\begin{verbatim}
+class Baza {
+public:
+    Baza(int x) {}
+};
+
+class Derivata : public Baza {
+public:
+    Derivata() {}
+};
+\end{verbatim}
+
+Corect:
+
+\begin{verbatim}
+class Derivata : public Baza {
+public:
+    Derivata() : Baza(5) {}
+};
+\end{verbatim}
+
+\subsection{Ascunderea membrilor}
+
+O metodă din clasa derivată poate ascunde o metodă cu același nume din clasa de bază.
+
+\begin{verbatim}
+class A {
+public:
+    void f() {}
+};
+
+class B : public A {
+public:
+    void f() {}
+};
+\end{verbatim}
+
+În acest caz, apelurile către f() vor utiliza funcția din clasa derivată.
+
+\subsection{Ambiguități în moștenirea multiplă}
+
+Dacă două clase de bază conțin membri cu același nume, compilatorul nu poate determina automat ce membru trebuie utilizat.
+
+\begin{verbatim}
+class A {
+public:
+    void f() {}
+};
+
+class B {
+public:
+    void f() {}
+};
+
+class C : public A, public B {
+};
+\end{verbatim}
+
+Pentru rezolvare se utilizează operatorul ::
+
+\begin{verbatim}
+c.A::f();
+c.B::f();
+\end{verbatim}
+
+\subsection{Recomandări}
+
+\begin{itemize}
+\item folosiți moștenirea doar pentru relații IS A;
+\item utilizați compunerea pentru relații HAS A;
+\item evitați accesarea directă a membrilor private;
+\item apelați explicit constructorii necesari ai bazei;
+\item folosiți moștenirea public atunci când doriți extinderea unei clase;
+\item verificați posibilitatea apariției ambiguităților în moștenirea multiplă.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Ordinea apelurilor constructorilor și destructorilor}
+
+În ierarhiile de moștenire, ordinea de apelare a constructorilor și destructorilor este foarte importantă. Aceasta este stabilită automat de compilator și nu poate fi modificată.
+
+\subsection{Regula generală}
+
+La construirea unui obiect:
+
+\begin{enumerate}
+\item se apelează constructorii claselor de bază;
+\item se construiesc atributele obiect;
+\item se execută constructorul clasei derivate.
+\end{enumerate}
+
+La distrugerea unui obiect:
+
+\begin{enumerate}
+\item se execută destructorul clasei derivate;
+\item se distrug atributele obiect;
+\item se execută destructorii claselor de bază.
+\end{enumerate}
+
+\subsection{Exemplu cu două clase}
+
+\begin{verbatim}
+class A {
+public:
+    A() {
+        cout << "Constructor A\n";
+    }
+
+    ~A() {
+        cout << "Destructor A\n";
+    }
+};
+
+class B : public A {
+public:
+    B() {
+        cout << "Constructor B\n";
+    }
+
+    ~B() {
+        cout << "Destructor B\n";
+    }
+};
+\end{verbatim}
+
+La crearea unui obiect:
+
+\begin{verbatim}
+B obiect;
+\end{verbatim}
+
+se obține:
+
+\begin{verbatim}
+Constructor A
+Constructor B
+\end{verbatim}
+
+La distrugerea obiectului:
+
+\begin{verbatim}
+Destructor B
+Destructor A
+\end{verbatim}
+
+\subsection{Exemplu cu trei clase}
+
+\begin{verbatim}
+class A {
+};
+
+class B : public A {
+};
+
+class C : public B {
+};
+\end{verbatim}
+
+Pentru:
+
+\begin{verbatim}
+C obiect;
+\end{verbatim}
+
+ordinea constructorilor este:
+
+\begin{verbatim}
+A
+B
+C
+\end{verbatim}
+
+iar ordinea destructorilor este:
+
+\begin{verbatim}
+C
+B
+A
+\end{verbatim}
+
+\subsection{Interpretare}
+
+Constructorii sunt apelați de la cea mai generală clasă către cea mai specializată clasă.
+
+Destructorii sunt apelați în sens invers, de la cea mai specializată clasă către cea mai generală.
+
+Astfel se garantează că fiecare obiect este construit complet înainte de utilizare și este distrus corect la final.
+
+\subsection{Exemplu de examen}
+
+\begin{verbatim}
+class A {
+public:
+    A() { cout << "A "; }
+    ~A() { cout << "~A "; }
+};
+
+class B : public A {
+public:
+    B() { cout << "B "; }
+    ~B() { cout << "~B "; }
+};
+
+int main() {
+    B x;
+}
+\end{verbatim}
+
+Afișarea va fi:
+
+\begin{verbatim}
+A B ~B ~A
+\end{verbatim}
+
+\subsection{De reținut}
+
+\begin{itemize}
+\item constructorii se execută de la bază la derivată;
+\item destructorii se execută de la derivată la bază;
+\item ordinea este determinată automat de compilator;
+\item aceeași regulă este valabilă pentru orice lanț de moștenire;
+\item în moștenirea multiplă, constructorii bazelor sunt apelați în ordinea în care apar în lista de moștenire.
+\end{itemize}
+
+
+
+
+
+
+
+
+\section{Recapitulare}
+
+În acest tutoriat au fost prezentate noțiunile fundamentale privind moștenirea și compunerea în limbajul C++.
+
+\subsection{Moștenirea}
+
+Moștenirea reprezintă mecanismul prin care o clasă poate extinde o altă clasă și poate reutiliza atributele și metodele acesteia.
+
+Prin moștenire apar două noțiuni importante:
+
+\begin{itemize}
+\item clasa de bază;
+\item clasa derivată.
+\end{itemize}
+
+Moștenirea modelează relația:
+
+\begin{center}
+IS A
+\end{center}
+
+Exemple:
+
+\begin{itemize}
+\item Student este o Persoană;
+\item Câine este un Animal;
+\item Pătrat este o Figură Geometrică.
+\end{itemize}
+
+\subsection{Compunerea}
+
+Compunerea reprezintă situația în care o clasă conține obiecte ale altor clase.
+
+Compunerea modelează relația:
+
+\begin{center}
+HAS A
+\end{center}
+
+Exemple:
+
+\begin{itemize}
+\item Facultatea are Studenți;
+\item Mașina are Motor;
+\item Calculatorul are Procesor.
+\end{itemize}
+
+\subsection{Tipuri de moștenire}
+
+În C++ există trei tipuri principale de moștenire:
+
+\begin{itemize}
+\item public;
+\item protected;
+\item private.
+\end{itemize}
+
+Moștenirea public este cea mai utilizată deoarece păstrează relația naturală dintre clase.
+
+\subsection{Constructori și destructori}
+
+Regula fundamentală este:
+
+\begin{itemize}
+\item constructorii se execută de la bază la derivată;
+\item destructorii se execută de la derivată la bază.
+\end{itemize}
+
+Pentru o ierarhie:
+
+\begin{verbatim}
+A -> B -> C
+\end{verbatim}
+
+ordinea constructorilor este:
+
+\begin{verbatim}
+A B C
+\end{verbatim}
+
+iar ordinea destructorilor este:
+
+\begin{verbatim}
+C B A
+\end{verbatim}
+
+\subsection{Moștenire multiplă}
+
+O clasă poate moșteni simultan mai multe clase de bază.
+
+Avantajele principale sunt reutilizarea codului și combinarea funcționalităților.
+
+Principalul dezavantaj îl reprezintă apariția ambiguităților.
+
+\subsection{Greșeli frecvente}
+
+\begin{itemize}
+\item confundarea relațiilor IS A și HAS A;
+\item accesarea membrilor private ai clasei de bază;
+\item alegerea greșită a tipului de moștenire;
+\item omiterea apelului constructorului bazei;
+\item ignorarea ambiguităților din moștenirea multiplă.
+\end{itemize}
+
+\subsection{Idei de reținut}
+
+\begin{enumerate}
+\item Folosim moștenirea pentru relații IS A.
+\item Folosim compunerea pentru relații HAS A.
+\item Membrii private nu sunt accesibili direct în clasele derivate.
+\item Constructorii se execută înaintea constructorului clasei derivate.
+\item Destructorii se execută în ordine inversă.
+\item Moștenirea public este în general alegerea recomandată.
+\item Moștenirea multiplă trebuie utilizată cu atenție.
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+\section{Exerciții}
+
+\subsection{Exercițiul 1 - IS A sau HAS A?}
+
+Stabiliți pentru fiecare dintre situațiile următoare dacă trebuie utilizată moștenirea sau compunerea:
+
+\begin{enumerate}
+\item Student - Persoană
+\item Mașină - Motor
+\item Profesor - Angajat
+\item Facultate - Student
+\item Cerc - Figură geometrică
+\end{enumerate}
+
+\textbf{Indicație:} Identificați dacă relația este de tip IS A sau HAS A.
+
+\subsection{Exercițiul 2 - Tipul moștenirii}
+
+Fie următoarea ierarhie de clase:
+
+\begin{verbatim}
+class A {
+public:
+    int x;
+
+protected:
+    int y;
+
+private:
+    int z;
+};
+
+class B : public A {
+};
+\end{verbatim}
+
+Precizați:
+
+\begin{enumerate}
+\item Ce membri sunt accesibili în clasa B?
+\item Ce membri sunt accesibili din exterior?
+\item Cum se modifică răspunsurile dacă moștenirea devine private?
+\item Cum se modifică răspunsurile dacă moștenirea devine protected?
+\end{enumerate}
+
+\subsection{Exercițiul 3 - Constructori}
+
+Determinați afișarea următorului program:
+
+\begin{verbatim}
+class A {
+public:
+    A() {
+        cout << "A ";
+    }
+};
+
+class B : public A {
+public:
+    B() {
+        cout << "B ";
+    }
+};
+
+int main() {
+    B x;
+}
+\end{verbatim}
+
+Explicați ordinea apelurilor.
+
+\subsection{Exercițiul 4 - Constructori și destructori}
+
+Determinați afișarea:
+
+\begin{verbatim}
+class A {
+public:
+    A() {
+        cout << "A ";
+    }
+
+    ~A() {
+        cout << "~A ";
+    }
+};
+
+class B : public A {
+public:
+    B() {
+        cout << "B ";
+    }
+
+    ~B() {
+        cout << "~B ";
+    }
+};
+
+int main() {
+    B x;
+}
+\end{verbatim}
+
+\subsection{Exercițiul 5 - Apelarea constructorului bazei}
+
+Corectați programul astfel încât să compileze:
+
+\begin{verbatim}
+class A {
+public:
+    A(int x) {
+    }
+};
+
+class B : public A {
+public:
+    B() {
+    }
+};
+\end{verbatim}
+
+Explicați cauza erorii.
+
+\subsection{Exercițiul 6 - Moștenire multiplă}
+
+Determinați afișarea:
+
+\begin{verbatim}
+class A {
+public:
+    A() {
+        cout << "A ";
+    }
+};
+
+class B {
+public:
+    B() {
+        cout << "B ";
+    }
+};
+
+class C : public A, public B {
+public:
+    C() {
+        cout << "C ";
+    }
+};
+
+int main() {
+    C x;
+}
+\end{verbatim}
+
+\subsection{Exercițiul 7 - Ambiguitate}
+
+Explicați eroarea și propuneți o rezolvare:
+
+\begin{verbatim}
+class A {
+public:
+    void f() {}
+};
+
+class B {
+public:
+    void f() {}
+};
+
+class C : public A, public B {
+};
+
+int main() {
+    C c;
+    c.f();
+}
+\end{verbatim}
+
+\subsection{Exercițiul 8 - Proiectare}
+
+Pentru fiecare caz de mai jos precizați dacă este mai potrivită moștenirea sau compunerea și justificați răspunsul:
+
+\begin{enumerate}
+\item Telefon - Baterie
+\item Elev - Persoană
+\item Calculator - Procesor
+\item Medic - Angajat
+\item Bibliotecă - Carte
+\end{enumerate}
+
+\subsection{Exercițiu recapitulativ}
+
+Completați spațiile libere:
+
+\begin{enumerate}
+\item Moștenirea modelează relația ............
+\item Compunerea modelează relația ............
+\item Constructorii se execută de la ............ la ............
+\item Destructorii se execută de la ............ la ............
+\item Membrii private ai clasei de bază sunt ............ în clasa derivată.
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

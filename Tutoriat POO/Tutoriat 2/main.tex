@@ -1,0 +1,323 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 2\\Const și Static}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Keyword-ul const}
+
+În proiectarea claselor există situații în care anumite date nu trebuie modificate după inițializare. Pentru exprimarea acestei proprietăți, C++ oferă calificatorul const.
+
+Acesta reprezintă o promisiune făcută compilatorului că valoarea respectivă nu va fi modificată pe durata de viață a obiectului.
+
+\subsection{Exemple de utilizare}
+
+\begin{itemize}
+\item Clasa Student: câmpul dataNasterii.
+\item Clasa CardBancar: câmpul numarCard.
+\end{itemize}
+
+\subsection{Variabile constante}
+
+Exemplu:
+
+const int x = 3;
+
+const double y = 3.0;
+
+Orice încercare de modificare a unei variabile constante produce eroare de compilare.
+
+\textbf{Observație}
+
+O variabilă constantă trebuie inițializată deoarece ulterior nu mai poate primi o valoare prin operatorul de atribuire.
+
+\section{Pointeri constanți vs pointeri către constante}
+
+Exemplu:
+
+const int* p;
+
+Se citește de la dreapta la stânga:
+
+pointer către un întreg constant.
+
+Exemplu:
+
+p = \&x;      // permis
+
+*p = 5;      // interzis
+
+Exemplu:
+
+int* const p = \&x;
+
+Se citește:
+
+pointer constant către un întreg.
+
+Exemplu:
+
+p = \&y;      // interzis
+
+*p = 5;      // permis
+
+\section{Date membre constante}
+
+Membrii constanți ai unei clase trebuie inițializați prin lista de inițializare a constructorului.
+
+\subsection{Lista de inițializare}
+
+Exemplu:
+
+class Student \{
+
+    const string CNP;
+
+    int varsta;
+
+public:
+
+    Student(string \_CNP)
+        : CNP(\_CNP)
+    \{
+        varsta = 0;
+    \}
+\};
+
+Lista de inițializare este introdusă prin caracterul ":" și este executată înaintea corpului constructorului.
+
+Pentru datele constante aceasta este obligatorie.
+
+\section{Metode constante}
+
+O metodă constantă garantează faptul că obiectul apelant nu va fi modificat.
+
+Exemplu:
+
+class Student \{
+
+    int varsta;
+
+public:
+
+    int getVarsta() const \{
+        return varsta;
+    \}
+\};
+
+În interiorul unei metode constante nu este permisă modificarea datelor membre.
+
+Exemplu:
+
+void set() const \{
+
+    varsta = 30; // eroare
+
+\}
+
+Getter-ele sunt aproape întotdeauna declarate const.
+
+\section{Erori frecvente provocate de const}
+
+\subsection{Obiecte constante}
+
+Un obiect constant poate apela exclusiv metode constante.
+
+Exemplu:
+
+class Student \{
+
+    int varsta;
+
+public:
+
+    int getVarsta() \{
+        return varsta;
+    \}
+\};
+
+int main() \{
+
+    const Student s;
+
+    cout << s.getVarsta(); // eroare
+\}
+
+Varianta corectă:
+
+int getVarsta() const \{
+    return varsta;
+\}
+
+\subsection{Referințe neconstante}
+
+Exemplu:
+
+void sum(Student\& s)
+
+acceptă modificarea parametrului.
+
+Pentru obiecte constante trebuie folosit:
+
+void sum(const Student\& s)
+
+Acest lucru garantează compilatorului că argumentul nu va fi modificat.
+
+\section{Keyword-ul static}
+
+\subsection{În limbajul C}
+
+Exemplu:
+
+void f() \{
+
+    static int nr = 0;
+
+    nr++;
+
+    printf("\%d", nr);
+\}
+
+Variabila este inițializată o singură dată și își păstrează valoarea între apelurile funcției.
+
+\section{Membri statici ai unei clase}
+
+Membrii statici nu aparțin unui obiect, ci întregii clase.
+
+Toate instanțele clasei partajează aceeași valoare.
+
+\subsection{Date statice neconstante}
+
+Exemplu:
+
+class A \{
+
+public:
+
+    static int x;
+\};
+
+int A::x = 3;
+
+Linia
+
+int A::x = 3;
+
+este obligatorie.
+
+\subsection{Date statice constante}
+
+Exemplu:
+
+class A \{
+
+public:
+
+    const static int x = 3;
+\};
+
+Pentru datele statice constante inițializarea se face direct în clasă.
+
+\section{Metode statice}
+
+Exemplu:
+\\
+class A \{
+
+public:
+
+    static void m1() \{
+        cout << "m1";
+    \}
+
+    static void m2();\\
+\};
+\\
+void A::m2() \{
+    cout << "m2";
+\}
+
+O metodă statică poate fi apelată prin:
+
+A::m1();
+
+sau
+
+A a;
+
+a.m2();
+
+deși prima variantă este recomandată.
+
+\textbf{Regulă importantă}
+
+O metodă statică poate accesa exclusiv membri și metode statice.
+
+\section{Erori frecvente provocate de static}
+
+\subsection{Dată statică neinițializată}
+
+Exemplu:
+\\
+class A \{
+
+public:
+
+    static int x;\\
+\};
+
+int main() \{
+
+    cout << A::x; // eroare\\
+\}
+
+Trebuie adăugată definiția:
+
+int A::x = 3;
+
+\subsection{Accesarea membrilor nestatici}
+
+Exemplu:
+\\
+class A \{
+
+public:
+
+    int x = 3;
+
+    static void m() \{
+
+        cout << x; // eroare\\
+    \}\\
+\};
+
+Rezolvări:
+
+\begin{itemize}
+\item transformarea lui x în membru static;
+\item eliminarea calificatorului static din metodă;
+\item crearea unui obiect local și accesarea prin instanță.
+\end{itemize}
+
+\section{Concluzii}
+
+\begin{itemize}
+\item const descrie imutabilitatea și oferă garanții la compilare;
+\item membrii constanți folosesc lista de inițializare;
+\item obiectele constante pot apela doar metode constante;
+\item membrii statici aparțin clasei, nu instanțelor;
+\item metodele statice au acces exclusiv la membri statici.
+\end{itemize}
+
+\end{document}

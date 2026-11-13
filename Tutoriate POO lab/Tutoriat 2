@@ -1,0 +1,325 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+/***************************************************
+* 1. VARIABILE CONST
+***************************************************/
+
+void exempluVariabileConst()
+{
+    const int x = 3;
+
+    cout << x << endl;
+
+    // x = 5; // EROARE
+}
+
+/***************************************************
+* 2. POINTER CATRE CONSTANTA
+***************************************************/
+
+void exempluPointerLaConst()
+{
+    int x = 3;
+    int y = 7;
+
+    const int* p = &x;
+
+    cout << *p << endl;
+
+    p = &y;      // OK
+
+    // *p = 10;  // EROARE
+}
+
+/***************************************************
+* 3. POINTER CONSTANT
+***************************************************/
+
+void exempluPointerConst()
+{
+    int x = 3;
+    int y = 7;
+
+    int* const p = &x;
+
+    *p = 10; // OK
+
+    // p = &y; // EROARE
+
+    cout << x << endl;
+}
+
+/***************************************************
+* 4. POINTER CONSTANT CATRE CONSTANTA
+***************************************************/
+
+void exempluPointerConstLaConst()
+{
+    int x = 3;
+
+    const int* const p = &x;
+
+    // p = &x;   // EROARE
+    // *p = 10;  // EROARE
+
+    cout << *p << endl;
+}
+
+/***************************************************
+* 5. LISTA DE INITIALIZARE
+***************************************************/
+
+class StudentInit
+{
+    const string CNP;
+
+public:
+
+    StudentInit(string cnp)
+        : CNP(cnp)
+    {
+    }
+
+    void afisare() const
+    {
+        cout << CNP << endl;
+    }
+};
+
+void exempluListaInitializare()
+{
+    StudentInit s("123456789");
+
+    s.afisare();
+}
+
+/***************************************************
+* 6. METODE CONST
+***************************************************/
+
+class StudentConst
+{
+    int varsta;
+
+public:
+
+    StudentConst()
+    {
+        varsta = 20;
+    }
+
+    int getVarsta() const
+    {
+        return varsta;
+    }
+
+    /*
+    void setVarsta() const
+    {
+        varsta = 30; // EROARE
+    }
+    */
+};
+
+void exempluMetodeConst()
+{
+    StudentConst s;
+
+    cout << s.getVarsta() << endl;
+}
+
+/***************************************************
+* 7. OBIECT CONSTANT
+***************************************************/
+
+class StudentObjConst
+{
+public:
+
+    int getVarsta() const
+    {
+        return 20;
+    }
+
+    /*
+    int getVarsta2()
+    {
+        return 20;
+    }
+    */
+};
+
+void exempluObiectConst()
+{
+    const StudentObjConst s;
+
+    cout << s.getVarsta() << endl;
+
+    // cout << s.getVarsta2(); // EROARE
+}
+
+/***************************************************
+* 8. REFERINTA CONST
+***************************************************/
+
+class StudentRef
+{
+public:
+
+    int varsta;
+
+    StudentRef(int v)
+    {
+        varsta = v;
+    }
+};
+
+void afisare(const StudentRef& s)
+{
+    cout << s.varsta << endl;
+
+    // s.varsta = 30; // EROARE
+}
+
+void exempluReferintaConst()
+{
+    StudentRef s(21);
+
+    afisare(s);
+}
+
+/***************************************************
+* 9. STATIC LOCAL
+***************************************************/
+
+void contor()
+{
+    static int nr = 0;
+
+    nr++;
+
+    cout << nr << endl;
+}
+
+void exempluStaticLocal()
+{
+    contor();
+    contor();
+    contor();
+}
+
+/***************************************************
+* 10. DATA STATICA
+***************************************************/
+
+class StudentStatic
+{
+public:
+
+    static int nrStudenti;
+
+    StudentStatic()
+    {
+        nrStudenti++;
+    }
+};
+
+int StudentStatic::nrStudenti = 0;
+
+void exempluDataStatica()
+{
+    StudentStatic s1;
+    StudentStatic s2;
+    StudentStatic s3;
+
+    cout << StudentStatic::nrStudenti << endl;
+}
+
+/***************************************************
+* 11. METODA STATICA
+***************************************************/
+
+class Util
+{
+public:
+
+    static void salut()
+    {
+        cout << "Salut!" << endl;
+    }
+};
+
+void exempluMetodaStatica()
+{
+    Util::salut();
+}
+
+/***************************************************
+* 12. EROARE - DATA STATICA NEDEFINITA
+***************************************************/
+
+/*
+class TestEroare
+{
+public:
+
+    static int x;
+};
+
+void exempluEroareStatic()
+{
+    cout << TestEroare::x << endl;
+}
+*/
+
+/***************************************************
+* 13. EROARE - METODA STATICA ACCESEAZA MEMBRU NORMAL
+***************************************************/
+
+/*
+class ExempluEroare
+{
+public:
+
+    int x = 5;
+
+    static void f()
+    {
+        cout << x; // EROARE
+    }
+};
+*/
+
+/***************************************************
+* MAIN
+***************************************************/
+
+int main()
+{
+    // exempluVariabileConst();
+
+    // exempluPointerLaConst();
+
+    // exempluPointerConst();
+
+    // exempluPointerConstLaConst();
+
+    // exempluListaInitializare();
+
+    // exempluMetodeConst();
+
+    // exempluObiectConst();
+
+    // exempluReferintaConst();
+
+    // exempluStaticLocal();
+
+    // exempluDataStatica();
+
+    // exempluMetodaStatica();
+
+    return 0;
+}

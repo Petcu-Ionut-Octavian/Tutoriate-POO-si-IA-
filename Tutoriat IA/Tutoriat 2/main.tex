@@ -1,0 +1,448 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 2\\Cautare Informata. Euristici. Greedy si A*}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducere}
+
+În multe probleme de inteligență artificială, spațiul de stări este foarte mare, iar strategiile de căutare neinformată devin ineficiente.
+
+Strategiile de căutare neinformată folosesc doar informațiile disponibile în definiția problemei și nu au cunoștințe despre cât de aproape se află un nod de soluție.
+
+Pentru a explora mai eficient spațiul de căutare folosim căutarea informată, care utilizează cunoștințe suplimentare despre problemă pentru a ghida alegerea nodurilor explorate.
+
+\section{Recapitulare. Probleme de căutare}
+
+O problemă de căutare este definită prin:
+
+\begin{itemize}
+\item starea inițială;
+\item operatorii (acțiunile disponibile);
+\item testul scop;
+\item funcția de cost.
+\end{itemize}
+
+O soluție reprezintă un drum de la starea inițială la o stare care satisface testul scop.
+
+Exemplu:
+
+Stare inițială: Arad
+
+Scop: București
+
+Acțiuni: deplasări între orașe conectate
+
+Cost: distanța parcursă
+
+Soluția optimă este drumul cu cost total minim.
+
+\section{Frontiera și strategia de căutare}
+
+Procesul de căutare construiește un arbore de căutare.
+
+Frontiera reprezintă colecția de noduri care au fost generate, dar care nu au fost încă expandate.
+
+Strategia de căutare specifică ordinea în care sunt explorate nodurile din frontieră.
+
+Algoritmul general de căutare:
+
+1. Inițializează frontiera cu starea inițială.
+
+2. Cât timp frontiera nu este vidă:
+   - selectează un nod conform strategiei;
+   - dacă nodul este scop, întoarce soluția;
+   - generează succesorii;
+   - adaugă succesorii în frontieră.
+
+\section{Evaluarea strategiilor de căutare}
+
+O strategie de căutare este analizată după mai multe criterii.
+
+Completitudine
+
+Strategia găsește o soluție dacă soluția există.
+
+Optimalitate
+
+Strategia găsește cea mai bună soluție disponibilă.
+
+Complexitate temporală
+
+Timpul necesar pentru găsirea soluției.
+
+Complexitate spațială
+
+Cantitatea de memorie utilizată.
+
+\section{Căutare neinformată}
+
+Căutarea neinformată nu folosește nicio informație suplimentară despre poziția scopului.
+
+Agentul poate:
+
+\begin{itemize}
+\item genera succesorii unei stări;
+\item verifica dacă o stare este scop.
+\end{itemize}
+
+Exemple:
+
+\begin{itemize}
+\item Breadth First Search (BFS);
+\item Depth First Search (DFS);
+\item Uniform Cost Search (UCS);
+\item Iterative Deepening Search (IDDFS).
+\end{itemize}
+
+Problema principală este că aceste strategii pot explora foarte multe stări inutile.
+
+\section{Căutare informată}
+
+Căutarea informată utilizează informații suplimentare despre problemă.
+
+Ideea este să explorăm mai întâi stările care par mai apropiate de scop.
+
+Aceste informații suplimentare sunt codificate cu ajutorul funcțiilor euristice.
+
+\section{Euristici}
+
+O euristică este o funcție:
+
+h(n)
+
+care estimează costul rămas de la nodul curent până la o stare scop.
+
+O euristică nu calculează costul exact.
+
+Ea oferă doar o estimare.
+
+Proprietăți:
+
+\begin{itemize}
+\item $h(n) \ge 0$;
+\item h(scop) = 0;
+\item este specifică problemei;
+\item oferă informații despre apropierea de soluție.
+\end{itemize}
+
+\section{Exemplu de euristică pentru harta României}
+
+Pentru fiecare oraș putem defini:
+
+h(x) = distanța în linie dreaptă dintre orașul x și București.
+
+Exemple:
+
+h(Arad) = 366
+
+h(Sibiu) = 253
+
+h(București) = 0
+
+Această valoare nu reprezintă costul real al drumului, ci doar o estimare.
+
+\section{Exemplu de euristică pentru 8-Puzzle}
+
+Pentru problema 8-puzzle putem utiliza mai multe euristici.
+
+Prima euristică:
+
+h1 = numărul pieselor aflate pe poziții greșite.
+
+A doua euristică:
+
+h2 = suma distanțelor Manhattan ale tuturor pieselor până la pozițiile finale.
+
+În practică, h2 oferă de obicei estimări mai bune decât h1.
+
+\section{Problema clătitelor}
+
+Problema sortării clătitelor constă în obținerea unei stive ordonate prin întoarcerea repetată a unor prefixe.
+
+O posibilă euristică este:
+
+h(x) = cea mai mare clătită care nu este încă pe poziția corectă.
+
+Valoarea euristicii oferă o estimare a distanței până la configurația scop.
+
+\section{Căutarea Greedy}
+
+Ideea principală a algoritmului Greedy este:
+
+explorează întotdeauna nodul care pare cel mai apropiat de scop.
+
+Funcția de evaluare este:
+
+f(n) = h(n)
+
+Algoritmul ignoră costul parcurs până la nodul curent.
+
+Contează doar estimarea până la scop.
+
+\section{Exemplu intuitiv}
+
+Presupunem că avem două orașe candidate.
+
+Primul oraș are:
+
+h = 150
+
+Al doilea oraș are:
+
+h = 80
+
+Greedy îl va alege pe al doilea deoarece pare mai apropiat de București.
+
+Nu contează cât a costat drumul până la acel oraș.
+
+\section{Avantajele algoritmului Greedy}
+
+\begin{itemize}
+\item găsește rapid o soluție;
+\item utilizează informația euristică;
+\item explorează mai puține noduri decât BFS sau DFS.
+\end{itemize}
+
+\section{Dezavantajele algoritmului Greedy}
+
+Nu garantează soluția optimă.
+
+Exemplu:
+
+Greedy poate găsi drumul:
+
+Arad → Sibiu → Făgăraș → București
+
+deși drumul optim este:
+
+Arad → Sibiu → Râmnicu Vâlcea → Pitești → București
+
+Prin urmare, Greedy poate produce soluții suboptimale.
+
+\section{Proprietățile algoritmului Greedy}
+
+Completitudine:
+
+DA, dacă evităm ciclurile.
+
+Optimalitate:
+
+NU.
+
+Complexitate timp:
+
+$O(b^m)$
+
+Complexitate spațiu:
+
+$O(b^m)$
+
+unde:
+
+b = factorul de ramificare
+
+m = adâncimea maximă explorată
+
+\section{Uniform Cost Search}
+
+Uniform Cost Search prioritizează nodurile cu cost acumulat minim.
+
+Funcția utilizată este:
+
+f(n) = g(n)
+
+unde:
+
+g(n) reprezintă costul real al drumului de la start la nodul curent.
+
+UCS este optimal deoarece explorează nodurile în ordine crescătoare a costului.
+
+\section{Interpretarea lui g(n)}
+
+g(n) răspunde la întrebarea:
+
+"Cât am plătit până acum pentru a ajunge aici?"
+
+Această valoare este exactă și nu implică estimări.
+
+\section{Interpretarea lui h(n)}
+
+h(n) răspunde la întrebarea:
+
+"Cât estimez că mai am până la scop?"
+
+Această valoare este aproximativă.
+
+\section{Algoritmul A*}
+
+A* combină avantajele strategiilor UCS și Greedy.
+
+Funcția de evaluare devine:
+
+f(n) = g(n) + h(n)
+
+unde:
+
+g(n) = costul real parcurs
+
+h(n) = costul estimat rămas
+
+Algoritmul selectează nodul cu valoarea f minimă.
+
+\section{Intuiția algoritmului A*}
+
+Greedy folosește doar viitorul estimat.
+
+UCS folosește doar trecutul.
+
+A* utilizează simultan:
+
+\begin{itemize}
+\item trecutul exact;
+\item viitorul estimat.
+\end{itemize}
+
+Prin această combinație, algoritmul este mai eficient decât UCS și mai sigur decât Greedy.
+
+\section{Când se oprește algoritmul A*}
+
+Nu ne oprim în momentul în care găsim pentru prima dată un nod scop.
+
+Ne oprim atunci când nodul scop este extras din frontieră și nu mai există noduri care pot conduce la o soluție mai bună.
+
+\section{Euristici admisibile}
+
+O euristică este admisibilă dacă nu supraestimează niciodată costul real.
+
+Formal:
+
+$h(n) \le h^{*}(n)$
+
+unde:
+
+h*(n) reprezintă costul real minim până la scop.
+
+Altfel spus:
+
+estimarea trebuie să fie optimistă.
+
+\section{Euristici inadmisibile}
+
+O euristică este inadmisibilă dacă supraestimează costul real.
+
+Consecință:
+
+algoritmul A* poate pierde soluția optimă.
+
+\section{Exemple de euristici admisibile}
+
+Problema misionarilor și canibalilor:
+
+h(n) = numărul persoanelor rămase pe malul inițial.
+
+Problema 8-puzzle:
+
+h(n) = numărul pieselor aflate pe poziții greșite.
+
+h(n) = suma distanțelor Manhattan.
+
+\section{Dominanța euristicilor}
+
+Considerăm două euristici admisibile:
+
+ha
+
+și
+
+hc
+
+Dacă:
+
+$ha(n) \ge hc(n)$
+
+pentru toate stările,
+
+atunci ha domină hc.
+
+O euristică dominantă oferă de obicei performanțe mai bune deoarece este mai aproape de valoarea reala.
+
+\section{Proprietățile algoritmului A*}
+
+Completitudine:
+
+DA
+
+Optimalitate:
+
+DA, dacă euristica este admisibilă.
+
+Complexitate timp:
+
+$O(b^m)$
+
+Complexitate spațiu:
+
+$O(b^s)$
+
+unde:
+
+b = factorul de ramificare
+
+m = adâncimea maximă explorată
+
+s = adâncimea soluției
+
+\section{Comparație între UCS, Greedy și A*}
+
+UCS
+
+\begin{itemize}
+\item optimal;
+\item complet;
+\item explorează multe noduri.
+\end{itemize}
+
+Greedy
+
+\begin{itemize}
+\item rapid;
+\item folosește euristici;
+\item nu este optimal.
+\end{itemize}
+
+A*
+
+\begin{itemize}
+\item folosește euristici;
+\item este complet;
+\item este optimal cu euristici admisibile;
+\item explorează mai puține noduri decât UCS.
+\end{itemize}
+
+\section{Concluzii}
+
+Căutarea informată utilizează informații suplimentare despre problemă pentru a ghida explorarea spațiului de stări.
+
+Funcțiile euristice estimează distanța până la scop și permit reducerea numărului de noduri explorate.
+
+Algoritmul Greedy explorează nodurile care par cele mai apropiate de scop și obține rapid soluții, dar nu garantează optimalitatea.
+
+Algoritmul A* combină costul real și estimarea euristică prin funcția:
+
+f(n) = g(n) + h(n)
+
+și reprezintă una dintre cele mai importante tehnici de căutare informată, fiind complet și optimal atunci când utilizează euristici admisibile.
+
+\end{document}

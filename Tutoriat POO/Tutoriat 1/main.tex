@@ -1,0 +1,581 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\geometry{margin=2.5cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{codegreen},
+    numberstyle=\tiny\color{codegray},
+    numbers=left,
+    frame=single,
+    breaklines=true
+}
+
+\title{\textbf{Tutoriat 1}\\Încapsulare, Getters \& Setters, Constructori}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Programarea Orientată pe Obiecte}
+
+Programarea Orientată pe Obiecte (POO) reprezintă o paradigmă de programare care organizează datele și funcționalitățile sub forma unor obiecte.
+
+În loc să avem variabile și funcții separate:
+
+\begin{lstlisting}
+string nume;
+int varsta;
+
+void afiseazaNume() {
+    cout << nume;
+}
+\end{lstlisting}
+
+putem grupa aceste informații într-o singură structură numită clasă.
+
+\section{Class vs Struct}
+
+Clasele reprezintă o extensie a structurilor de date.
+
+La fel ca structurile, ele pot conține variabile:
+
+\begin{lstlisting}
+class Student {
+    int varsta;
+    string nume;
+};
+\end{lstlisting}
+
+Dar pot conține și funcții:
+
+\begin{lstlisting}
+class Student {
+    int varsta;
+    string nume;
+
+    void afiseazaNume() {
+        cout << nume;
+    }
+};
+\end{lstlisting}
+
+Datele și funcțiile sunt astfel grupate într-o singură entitate.
+
+\section{Încapsularea}
+
+Încapsularea este unul dintre principiile fundamentale ale programării orientate pe obiecte.
+
+Ea se bazează pe două idei:
+
+\begin{itemize}
+    \item gruparea datelor și funcțiilor într-o singură structură;
+    \item controlul accesului la date.
+\end{itemize}
+
+Pentru a controla accesul folosim modificatori de acces.
+
+\section{Modificatori de acces}
+
+Există trei modificatori de acces în C++.
+
+\subsection*{private}
+
+Membrii sunt accesibili doar din interiorul clasei.
+
+\begin{lstlisting}
+class Student {
+private:
+    int varsta;
+};
+\end{lstlisting}
+
+\subsection*{public}
+
+Membrii pot fi accesați de oriunde.
+
+\begin{lstlisting}
+class Student {
+public:
+    void afiseaza() {
+        cout << "Salut!";
+    }
+};
+\end{lstlisting}
+
+\subsection*{protected}
+
+Pentru moment îl putem considera asemănător cu \texttt{private}. Diferențele vor apărea atunci când vom discuta despre moștenire.
+
+
+\newpage
+\section{Sintaxa unei clase}
+
+\begin{lstlisting}
+class NumeClasa {
+
+private:
+    // date
+
+public:
+    // functii
+
+};
+\end{lstlisting}
+
+Exemplu:
+
+\begin{lstlisting}
+class Student {
+
+private:
+    string nume;
+
+public:
+    void afiseazaNume() {
+        cout << nume;
+    }
+
+};
+\end{lstlisting}
+
+Utilizatorul clasei poate apela:
+
+\begin{lstlisting}
+student.afiseazaNume();
+\end{lstlisting}
+
+dar nu poate accesa:
+
+\begin{lstlisting}
+student.nume;
+\end{lstlisting}
+
+\section{Getters și Setters}
+
+Dacă datele sunt private, avem nevoie de metode prin care să le accesăm și să le modificăm.
+
+\subsection*{Getter}
+
+Un getter întoarce valoarea unei variabile private.
+
+\begin{lstlisting}
+int getVarsta() {
+    return varsta;
+}
+\end{lstlisting}
+
+\subsection*{Setter}
+
+Un setter modifică valoarea unei variabile private.
+
+\begin{lstlisting}
+void setVarsta(int v) {
+    varsta = v;
+}
+\end{lstlisting}
+
+\subsection*{Exemplu}
+
+\begin{lstlisting}
+class Student {
+
+private:
+    string nume;
+    int varsta;
+
+public:
+
+    void setNume(string n) {
+        nume = n;
+    }
+
+    string getNume() {
+        return nume;
+    }
+
+    void setVarsta(int v) {
+        varsta = v;
+    }
+
+    int getVarsta() {
+        return varsta;
+    }
+};
+\end{lstlisting}
+
+Utilizare:
+
+\begin{lstlisting}
+Student s;
+
+s.setNume("Ion");
+s.setVarsta(20);
+
+cout << s.getNume();
+cout << s.getVarsta();
+\end{lstlisting}
+
+\section{Sunt getter-ele întotdeauna utile?}
+
+La prima vedere:
+
+\begin{lstlisting}
+student.varsta
+\end{lstlisting}
+
+și
+
+\begin{lstlisting}
+student.getVarsta()
+\end{lstlisting}
+
+par foarte asemănătoare.
+
+Dacă un getter doar returnează valoarea unei variabile și nu face altceva, diferența practică este foarte mică.
+
+\begin{lstlisting}
+class Student {
+private:
+    int varsta;
+
+public:
+    int getVarsta() {
+        return varsta;
+    }
+};
+\end{lstlisting}
+
+față de
+
+\begin{lstlisting}
+class Student {
+public:
+    int varsta;
+};
+\end{lstlisting}
+
+obținem aproape același comportament, doar că scriem:
+
+\begin{lstlisting}
+student.getVarsta()
+\end{lstlisting}
+
+în loc de
+
+\begin{lstlisting}
+student.varsta
+\end{lstlisting}
+
+În practică este adesea mai util să expunem comportamente și acțiuni decât să expunem date.
+
+\section{Obiecte}
+
+\subsection*{Definiție formală}
+
+Un obiect este o instanță a unei clase.
+
+\subsection*{Definiție informală}
+
+Un obiect este o variabilă al cărei tip este o clasă.
+
+Exemplu:
+
+\begin{lstlisting}
+Student s;
+\end{lstlisting}
+
+Aici:
+
+\begin{itemize}
+    \item Student este clasa;
+    \item s este obiectul.
+\end{itemize}
+
+\section{Constructori}
+
+Până acum am creat obiecte și ulterior le-am setat valorile.
+
+\begin{lstlisting}
+Student s;
+
+s.setNume("Ion");
+s.setVarsta(20);
+\end{lstlisting}
+
+Putem simplifica procesul folosind un constructor.
+
+\subsection*{Definiție}
+
+Constructorul este o metodă specială:
+
+\begin{itemize}
+    \item nu are tip de retur;
+    \item are același nume ca și clasa;
+    \item este apelată automat la crearea obiectului.
+\end{itemize}
+
+\subsection*{Exemplu}
+
+\begin{lstlisting}
+class Student {
+
+private:
+    string nume;
+    int varsta;
+
+public:
+
+    Student(string n, int v) {
+        nume = n;
+        varsta = v;
+    }
+
+    string getNume() {
+        return nume;
+    }
+
+    int getVarsta() {
+        return varsta;
+    }
+};
+\end{lstlisting}
+
+Utilizare:
+
+\begin{lstlisting}
+Student s("Ion", 20);
+
+cout << s.getNume();
+cout << s.getVarsta();
+\end{lstlisting}
+
+\newpage
+
+\section{Exemplu complet}
+
+Până acum am folosit getters și setters pentru a accesa date private.
+
+Un student observă rapid că:
+
+\begin{lstlisting}
+card.getBani()
+\end{lstlisting}
+
+și
+
+\begin{lstlisting}
+card.bani
+\end{lstlisting}
+
+par să facă aproximativ același lucru.
+
+În exemplul următor nu vom expune deloc suma de bani printr-un getter. În schimb vom lăsa obiectul să decidă singur dacă poate efectua o cumpărătură.
+
+\subsection{Clasa Produs}
+
+\begin{lstlisting}
+class Produs {
+
+private:
+    string nume;
+    int pret;
+
+public:
+
+    Produs(string n, int p)
+        : nume(n), pret(p) {}
+
+    string getNume() {
+        return nume;
+    }
+
+    int getPret() {
+        return pret;
+    }
+};
+\end{lstlisting}
+
+\newpage
+\subsection{Clasa Card}
+
+\begin{lstlisting}
+class Card {
+
+private:
+    string posesor;
+    int bani;
+
+public:
+
+    Card(string p, int b)
+        : posesor(p), bani(b) {}
+
+    bool buy(const Produs& produs) {
+
+        if(bani >= produs.getPret()) {
+            bani -= produs.getPret();
+            return true;
+        }
+
+        return false;
+    }
+
+    void afiseazaSold() {
+
+        cout << posesor
+             << " are "
+             << bani
+             << " lei.\n";
+    }
+};
+\end{lstlisting}
+
+Observați că nu avem:
+
+\begin{lstlisting}
+int getBani();
+\end{lstlisting}
+
+Nu întrebăm cardul câți bani are pentru a decide noi dacă se poate cumpăra produsul.
+
+În schimb scriem:
+
+\begin{lstlisting}
+card.buy(produs)
+\end{lstlisting}
+
+și obiectul decide singur dacă tranzacția poate avea loc.
+
+\newpage
+\subsection{Clasa Persoana}
+
+\begin{lstlisting}
+#include <vector>
+
+class Persoana {
+
+private:
+    string nume;
+    Card card;
+    vector<Produs> produse;
+
+public:
+
+    Persoana(string n, Card c)
+        : nume(n), card(c) {}
+
+    void cumpara(const Produs& produs) {
+
+        if(card.buy(produs)) {
+
+            produse.push_back(produs);
+
+            cout << nume
+                 << " a cumparat "
+                 << produs.getNume()
+                 << ".\n";
+        }
+        else {
+
+            cout << nume
+                 << " nu are suficienti bani.\n";
+        }
+    }
+
+    void afiseazaProduse() {
+
+        cout << "Produsele lui "
+             << nume
+             << ":\n";
+
+        for(auto produs : produse) {
+            cout << produs.getNume() << '\n';
+        }
+    }
+
+    void afiseazaSold() {
+        card.afiseazaSold();
+    }
+};
+\end{lstlisting}
+
+\subsection{Factory Pattern}
+
+O clasă poate fi responsabilă de crearea obiectelor.
+
+Această idee stă la baza design pattern-ului Factory.
+
+\begin{lstlisting}
+class Magazin {
+
+public:
+
+    static Produs creeazaLaptop() {
+        return Produs("Laptop", 3500);
+    }
+
+    static Produs creeazaMouse() {
+        return Produs("Mouse", 120);
+    }
+
+    static Produs creeazaCasti() {
+        return Produs("Casti", 250);
+    }
+};
+\end{lstlisting}
+
+\subsection{Utilizare}
+
+\begin{lstlisting}
+int main() {
+
+    Card card("Ion", 5000);
+
+    Persoana persoana("Ion", card);
+
+    Produs laptop = Magazin::creeazaLaptop();
+    Produs mouse = Magazin::creeazaMouse();
+    Produs casti = Magazin::creeazaCasti();
+
+    persoana.cumpara(mouse);
+    persoana.cumpara(casti);
+    persoana.cumpara(laptop);
+
+    persoana.afiseazaProduse();
+    persoana.afiseazaSold();
+}
+\end{lstlisting}
+
+\section{Concluzii}
+
+În exemplul anterior am ascuns complet variabila:
+
+\begin{lstlisting}
+int bani;
+\end{lstlisting}
+
+și am expus doar comportamentul relevant:
+
+\begin{lstlisting}
+card.buy(produs)
+\end{lstlisting}
+
+Această abordare este mai apropiată de spiritul programării orientate pe obiecte: obiectele expun comportamente și ascund detaliile interne ale implementării.
+
+\end{document}
