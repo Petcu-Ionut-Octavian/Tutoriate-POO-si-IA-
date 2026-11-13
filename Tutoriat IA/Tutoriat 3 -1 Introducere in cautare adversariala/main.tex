@@ -1,0 +1,1186 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+\usepackage{amsmath}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 3\\Cautare Adversariala - Introducere in cautare adversariala}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Introducere}
+
+Inteligența Artificială (Artificial Intelligence - AI) reprezintă domeniul informaticii care studiază dezvoltarea sistemelor capabile să realizeze sarcini ce necesită în mod obișnuit inteligență umană.
+
+Printre obiectivele principale ale Inteligenței Artificiale se numără:
+
+\begin{itemize}
+\item rezolvarea de probleme;
+\item luarea deciziilor;
+\item planificarea acțiunilor;
+\item învățarea din experiență;
+\item înțelegerea limbajului natural;
+\item percepția mediului înconjurător.
+\end{itemize}
+
+Un concept central în Inteligența Artificială este cel de agent inteligent.
+
+Un agent este o entitate care percepe mediul prin intermediul senzorilor și acționează asupra acestuia folosind actuatori.
+
+Exemple de agenți:
+
+\begin{itemize}
+\item un robot autonom;
+\item un program care joacă șah;
+\item un vehicul autonom;
+\item un asistent virtual;
+\item un sistem de recomandare.
+\end{itemize}
+
+Pentru ca un agent să poată lua decizii eficiente, acesta trebuie să analizeze mediul în care operează și să aleagă acțiunile care conduc la obținerea unui rezultat cât mai favorabil.
+
+În cadrul acestui tutoriat vom studia o categorie importantă de probleme din Inteligența Artificială: problemele de căutare adversarială.
+
+Aceste probleme apar în jocuri și scenarii multi-agent în care succesul unui agent depinde de acțiunile altor agenți.
+
+Exemple clasice:
+
+\begin{itemize}
+\item șah;
+\item dame;
+\item X și 0;
+\item Go;
+\item Poker.
+\end{itemize}
+
+Pentru rezolvarea acestor probleme vom introduce:
+
+\begin{itemize}
+\item arborii de joc;
+\item algoritmul MiniMax;
+\item funcțiile de evaluare;
+\item tehnica Alpha-Beta Pruning.
+\end{itemize}
+
+Aceste metode permit unui agent să selecteze mutarea optimă presupunând că adversarul joacă în mod rațional și încearcă să îi minimizeze șansele de succes.
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Agenți inteligenți și medii}
+
+Un concept fundamental în Inteligența Artificială este cel de agent inteligent.
+
+Un agent este o entitate care percepe mediul în care operează și acționează asupra acestuia astfel încât să își atingă obiectivele.
+
+Schema generală este:
+
+\begin{center}
+Mediu → Percepție → Agent → Acțiune → Mediu
+\end{center}
+
+Agentul primește informații despre mediu, le analizează și selectează o acțiune pe care o consideră optimă.
+
+\subsection{Percepții și acțiuni}
+
+Percepțiile reprezintă informațiile pe care agentul le obține din mediu.
+
+Acțiunile reprezintă operațiile pe care agentul le poate executa pentru a modifica mediul sau pentru a influența evoluția acestuia.
+
+Exemple:
+
+\begin{itemize}
+\item un robot percepe distanțe și se poate deplasa;
+\item un vehicul autonom percepe obstacole și poate accelera sau frâna;
+\item un program de șah percepe configurația tablei și poate efectua mutări.
+\end{itemize}
+
+\subsection{Raționalitatea unui agent}
+
+Un agent este considerat rațional dacă selectează acțiunea care maximizează performanța sa pe baza informațiilor disponibile.
+
+Agentul nu trebuie să fie perfect.
+
+El trebuie să ia cea mai bună decizie posibilă folosind cunoștințele și resursele de care dispune la momentul respectiv.
+
+\subsection{Mediul}
+
+Mediul reprezintă tot ceea ce se află în afara agentului și cu care acesta interacționează.
+
+Caracteristicile mediului influențează dificultatea problemei pe care agentul trebuie să o rezolve.
+
+\subsection{Tipuri de medii}
+
+\subsubsection{Complet observabil vs parțial observabil}
+
+Un mediu este complet observabil dacă agentul poate cunoaște în orice moment întreaga stare a sistemului.
+
+Exemple:
+
+\begin{itemize}
+\item șah;
+\item X și 0.
+\end{itemize}
+
+Un mediu este parțial observabil dacă anumite informații lipsesc sau sunt inaccesibile.
+
+Exemple:
+
+\begin{itemize}
+\item poker;
+\item conducerea unui autovehicul în trafic.
+\end{itemize}
+
+\subsubsection{Determinist vs stochastic}
+
+Într-un mediu determinist, aceeași acțiune produce întotdeauna același rezultat.
+
+Exemplu:
+
+\begin{itemize}
+\item șah.
+\end{itemize}
+
+Într-un mediu stochastic există elemente aleatorii care influențează rezultatul.
+
+Exemple:
+
+\begin{itemize}
+\item zaruri;
+\item jocuri de noroc;
+\item vremea.
+\end{itemize}
+
+\subsubsection{Static vs dinamic}
+
+Un mediu static nu se modifică în timp ce agentul analizează situația.
+
+Exemplu:
+
+\begin{itemize}
+\item rezolvarea unui puzzle.
+\end{itemize}
+
+Un mediu dinamic se poate modifica independent de agent.
+
+Exemple:
+
+\begin{itemize}
+\item traficul rutier;
+\item jocurile în timp real.
+\end{itemize}
+
+\subsubsection{Discret vs continuu}
+
+Un mediu discret are un număr finit de stări și acțiuni.
+
+Exemple:
+
+\begin{itemize}
+\item șah;
+\item dame;
+\item X și 0.
+\end{itemize}
+
+Un mediu continuu permite valori reale pentru stări sau acțiuni.
+
+Exemple:
+
+\begin{itemize}
+\item controlul unui robot;
+\item pilotarea unui avion.
+\end{itemize}
+
+\subsection{Agenți în jocuri}
+
+În cadrul jocurilor, fiecare jucător poate fi modelat ca un agent.
+
+Fiecare agent încearcă să își maximizeze propriul succes și să reducă șansele adversarului.
+
+Această situație conduce la probleme de căutare adversarială, unde decizia optimă depinde atât de acțiunile proprii, cât și de reacțiile adversarului.
+
+Studiul acestor probleme va conduce la introducerea arborilor de joc și a algoritmului MiniMax.
+
+
+
+
+
+
+
+
+\section{Căutare adversarială}
+
+În multe aplicații de Inteligență Artificială, agentul nu operează singur în mediu, ci trebuie să ia decizii în prezența altor agenți care urmăresc obiective diferite sau chiar opuse.
+
+Aceste situații conduc la probleme de căutare adversarială.
+
+Căutarea adversarială studiază metodele prin care un agent poate determina cea mai bună acțiune ținând cont de faptul că adversarul va încerca să îi reducă șansele de succes.
+
+\subsection{Motivație}
+
+În problemele clasice de căutare, mediul este pasiv.
+
+Agentul trebuie doar să găsească o secvență de acțiuni care conduce la atingerea scopului.
+
+În jocuri însă, situația este diferită.
+
+După fiecare decizie a agentului, adversarul poate răspunde cu propria mutare.
+
+Astfel, rezultatul final depinde de deciziile ambilor jucători.
+
+\subsection{Exemple}
+
+Problemele de căutare adversarială apar în:
+
+\begin{itemize}
+\item șah;
+\item dame;
+\item X și 0;
+\item Go;
+\item Reversi;
+\item poker;
+\item jocuri strategice.
+\end{itemize}
+
+În toate aceste exemple, succesul unui jucător depinde atât de propriile mutări, cât și de mutările adversarului.
+
+\subsection{Modelarea unei probleme de joc}
+
+Pentru a putea analiza un joc, trebuie definite următoarele elemente:
+
+\begin{itemize}
+\item starea inițială;
+\item mulțimea acțiunilor posibile;
+\item funcția de tranziție;
+\item stările terminale;
+\item funcția de utilitate.
+\end{itemize}
+
+Aceste componente permit construirea unui model formal al jocului.
+
+\subsection{Stări}
+
+O stare descrie complet configurația curentă a jocului.
+
+Exemple:
+
+\begin{itemize}
+\item poziția pieselor pe tabla de șah;
+\item configurația tablei de X și 0;
+\item distribuția cărților într-un joc de poker.
+\end{itemize}
+
+Din fiecare stare se pot genera stările succesoare prin aplicarea mutărilor legale.
+
+\subsection{Stări terminale}
+
+O stare terminală reprezintă o stare în care jocul s-a încheiat.
+
+Exemple:
+
+\begin{itemize}
+\item șah mat;
+\item remiză;
+\item victoria unuia dintre jucători;
+\item ocuparea completă a tablei la X și 0.
+\end{itemize}
+
+Într-o stare terminală nu mai există mutări posibile.
+
+\subsection{Funcția de utilitate}
+
+Funcția de utilitate atribuie o valoare numerică fiecărei stări terminale.
+
+Această valoare exprimă cât de favorabil este rezultatul pentru jucătorul analizat.
+
+Un exemplu simplu:
+
+\begin{itemize}
+\item +1 pentru victorie;
+\item 0 pentru remiză;
+\item -1 pentru înfrângere.
+\end{itemize}
+
+Scopul agentului este maximizarea utilității.
+
+\subsection{Jucătorul MAX și jucătorul MIN}
+
+În teoria jocurilor, participanții sunt reprezentați de obicei astfel:
+
+\begin{itemize}
+\item MAX - jucătorul pentru care calculăm strategia optimă;
+\item MIN - adversarul, care încearcă să minimizeze câștigul lui MAX.
+\end{itemize}
+
+La fiecare nivel al arborelui de joc, unul dintre cei doi jucători alege mutarea următoare.
+
+\subsection{Obiectivul căutării adversariale}
+
+Problema principală este:
+
+\begin{center}
+"Ce mutare trebuie să aleagă MAX dacă presupunem că MIN joacă perfect?"
+\end{center}
+
+Pentru a răspunde la această întrebare este necesară generarea și analiza arborelui de joc.
+
+Acest proces conduce la algoritmul MiniMax, una dintre cele mai importante metode de căutare adversarială din Inteligența Artificială.
+
+
+
+
+
+
+
+
+\section{Jocuri și tipuri de jocuri}
+
+Jocurile reprezintă una dintre cele mai importante aplicații ale căutării adversariale în Inteligența Artificială.
+
+Într-un joc există mai mulți agenți care iau decizii succesive pentru atingerea propriilor obiective.
+
+Succesul unui jucător depinde atât de propriile mutări, cât și de deciziile adversarilor.
+
+\subsection{Componentele unui joc}
+
+Un joc poate fi descris prin următoarele elemente:
+
+\begin{itemize}
+\item mulțimea jucătorilor;
+\item starea inițială;
+\item acțiunile disponibile;
+\item regulile de tranziție între stări;
+\item stările terminale;
+\item funcția de utilitate.
+\end{itemize}
+
+Aceste componente permit modelarea formală a jocului și aplicarea algoritmilor de căutare.
+
+\subsection{Jocuri deterministe}
+
+În jocurile deterministe nu există elemente aleatorii.
+
+Rezultatul unei acțiuni este întotdeauna cunoscut.
+
+Exemple:
+
+\begin{itemize}
+\item șah;
+\item dame;
+\item X și 0;
+\item Go.
+\end{itemize}
+
+În aceste jocuri, evoluția depinde exclusiv de deciziile jucătorilor.
+
+\subsection{Jocuri stochastice}
+
+În jocurile stochastice intervin evenimente aleatoare.
+
+Rezultatul unei mutări poate depinde de șansă.
+
+Exemple:
+
+\begin{itemize}
+\item table;
+\item poker;
+\item jocurile cu zaruri.
+\end{itemize}
+
+Aceste jocuri necesită modele probabilistice suplimentare.
+
+\subsection{Jocuri cu informație completă}
+
+În jocurile cu informație completă fiecare jucător cunoaște întreaga stare a jocului.
+
+Toate mutările și toate informațiile sunt vizibile.
+
+Exemple:
+
+\begin{itemize}
+\item șah;
+\item dame;
+\item X și 0.
+\end{itemize}
+
+Aceste jocuri sunt cele mai frecvent utilizate pentru prezentarea algoritmului MiniMax.
+
+\subsection{Jocuri cu informație incompletă}
+
+În jocurile cu informație incompletă anumite informații sunt ascunse.
+
+Jucătorii trebuie să ia decizii fără a cunoaște complet starea jocului.
+
+Exemple:
+
+\begin{itemize}
+\item poker;
+\item blackjack.
+\end{itemize}
+
+În astfel de situații devine necesară estimarea informațiilor lipsă.
+
+\subsection{Jocuri cu doi jucători}
+
+Majoritatea exemplelor studiate în Inteligența Artificială implică doi jucători:
+
+\begin{itemize}
+\item MAX;
+\item MIN.
+\end{itemize}
+
+MAX încearcă să maximizeze câștigul.
+
+MIN încearcă să minimizeze câștigul lui MAX.
+
+Această formulare stă la baza algoritmului MiniMax.
+
+\subsection{Jocuri cu mai mulți jucători}
+
+Există și jocuri care implică mai mult de doi participanți.
+
+Exemple:
+
+\begin{itemize}
+\item jocuri de strategie;
+\item jocuri de negociere;
+\item jocuri cooperative.
+\end{itemize}
+
+Acestea necesită modele mai complexe decât cele utilizate în MiniMax.
+
+\subsection{Exemple clasice în Inteligența Artificială}
+
+Cele mai utilizate jocuri pentru testarea algoritmilor de Inteligență Artificială sunt:
+
+\begin{itemize}
+\item X și 0;
+\item șah;
+\item dame;
+\item Connect Four;
+\item Othello (Reversi);
+\item Go.
+\end{itemize}
+
+Aceste jocuri oferă un cadru ideal pentru studierea strategiilor de luare a deciziilor.
+
+\subsection{Concluzie}
+
+Pentru a determina mutarea optimă într-un joc este necesară explorarea posibilelor evoluții ale jocului.
+
+Acest lucru conduce la construirea arborelui de joc, care reprezintă fundamentul algoritmului MiniMax.
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Jocuri cu sumă zero}
+
+În teoria jocurilor, un caz particular foarte important este reprezentat de jocurile cu sumă zero.
+
+Într-un joc cu sumă zero, câștigul unui jucător este egal cu pierderea adversarului.
+
+Cu alte cuvinte, suma rezultatelor tuturor jucătorilor este întotdeauna egală cu zero.
+
+\subsection{Definiție}
+
+Fie doi jucători:
+
+\begin{itemize}
+\item MAX;
+\item MIN.
+\end{itemize}
+
+Dacă un rezultat oferă lui MAX un câștig de +v, atunci același rezultat produce lui MIN o pierdere de -v.
+
+Formal:
+
+\[
+U_{MAX} + U_{MIN} = 0
+\]
+
+unde:
+
+\begin{itemize}
+\item $U_{MAX}$ reprezintă utilitatea lui MAX;
+\item $U_{MIN}$ reprezintă utilitatea lui MIN.
+\end{itemize}
+
+\subsection{Exemplu simplu}
+
+Considerăm următoarele rezultate:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Rezultat & Utilitate pentru MAX \\
+\hline
+Victorie & +1 \\
+\hline
+Remiză & 0 \\
+\hline
+Înfrângere & -1 \\
+\hline
+\end{tabular}
+\end{center}
+
+Utilitatea pentru MIN va fi:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Rezultat & Utilitate pentru MIN \\
+\hline
+Victorie MAX & -1 \\
+\hline
+Remiză & 0 \\
+\hline
+Înfrângere MAX & +1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Exemple de jocuri cu sumă zero}
+
+Majoritatea jocurilor clasice studiate în Inteligența Artificială sunt jocuri cu sumă zero:
+
+\begin{itemize}
+\item șah;
+\item dame;
+\item X și 0;
+\item Connect Four;
+\item Reversi;
+\item Go.
+\end{itemize}
+
+În toate aceste jocuri, avantajul unuia dintre jucători reprezintă dezavantajul adversarului.
+
+\subsection{Ipoteza adversarului perfect}
+
+Algoritmul MiniMax presupune că adversarul joacă perfect.
+
+Astfel:
+
+\begin{itemize}
+\item MAX încearcă să maximizeze utilitatea;
+\item MIN încearcă să minimizeze utilitatea lui MAX.
+\end{itemize}
+
+Fiecare jucător alege întotdeauna mutarea cea mai favorabilă pentru el.
+
+\subsection{Interpretarea unei stări}
+
+O stare a jocului poate fi evaluată printr-o valoare numerică.
+
+Exemplu:
+
+\begin{itemize}
+\item +100 = situație foarte favorabilă pentru MAX;
+\item 0 = poziție echilibrată;
+\item -100 = situație foarte favorabilă pentru MIN.
+\end{itemize}
+
+Scopul lui MAX este obținerea celei mai mari valori posibile.
+
+Scopul lui MIN este obținerea celei mai mici valori posibile.
+
+\subsection{De ce sunt importante jocurile cu sumă zero?}
+
+Jocurile cu sumă zero permit formularea matematică simplă a conflictului dintre doi agenți.
+
+Această proprietate face posibilă aplicarea algoritmului MiniMax și a tehnicilor de Alpha-Beta Pruning.
+
+Fără această ipoteză, analiza jocului devine mult mai complexă și necesită modele mai avansate din teoria jocurilor.
+
+\subsection{Concluzie}
+
+În jocurile cu sumă zero, interesul celor doi jucători este complet opus.
+
+MAX încearcă să maximizeze câștigul, iar MIN încearcă să îl minimizeze.
+
+Această idee stă la baza construirii arborelui de joc și a algoritmului MiniMax, care va fi studiat în secțiunile următoare.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Formularea unei probleme de joc}
+
+Pentru a aplica algoritmi de căutare adversarială, un joc trebuie descris într-o formă matematică precisă.
+
+Această descriere poartă numele de formularea problemei de joc.
+
+Scopul formulării este definirea tuturor elementelor necesare pentru ca un agent să poată analiza situația curentă și să aleagă o mutare optimă.
+
+\subsection{Componentele unei probleme de joc}
+
+O problemă de joc este definită prin:
+
+\begin{itemize}
+\item starea inițială;
+\item funcția succesor;
+\item mulțimea acțiunilor legale;
+\item jucătorul curent;
+\item testul de terminare;
+\item funcția de utilitate.
+\end{itemize}
+
+Aceste componente permit construirea arborelui de joc.
+
+\subsection{Starea inițială}
+
+Starea inițială reprezintă configurația de la care începe jocul.
+
+Exemple:
+
+\begin{itemize}
+\item tabla de șah la începutul partidei;
+\item tabla goală la X și 0;
+\item poziția inițială dintr-un joc de dame.
+\end{itemize}
+
+Toate celelalte stări se obțin pornind de la această configurație.
+
+\subsection{Acțiunile}
+
+Pentru fiecare stare există o mulțime de acțiuni legale.
+
+O acțiune reprezintă o mutare permisă de regulile jocului.
+
+Exemple:
+
+\begin{itemize}
+\item mutarea unui pion;
+\item plasarea unui simbol X pe tablă;
+\item capturarea unei piese.
+\end{itemize}
+
+Numărul acțiunilor poate varia de la o stare la alta.
+
+\subsection{Funcția succesor}
+
+Funcția succesor descrie modul în care se obține o nouă stare după efectuarea unei acțiuni.
+
+Formal:
+
+\[
+Succesor(Stare, Actiune)
+=
+StareNoua
+\]
+
+Această funcție permite generarea tuturor mutărilor posibile dintr-o anumită poziție.
+
+\subsection{Jucătorul curent}
+
+În fiecare stare trebuie să știm cine urmează să efectueze mutarea.
+
+În algoritmul MiniMax folosim convențional doi jucători:
+
+\begin{itemize}
+\item MAX;
+\item MIN.
+\end{itemize}
+
+Nivelurile arborelui alternează între MAX și MIN.
+
+\subsection{Stări terminale}
+
+O stare terminală este o stare în care jocul s-a încheiat.
+
+În aceste stări nu mai există acțiuni disponibile.
+
+Exemple:
+
+\begin{itemize}
+\item șah mat;
+\item remiză;
+\item victoria unui jucător la X și 0;
+\item ocuparea completă a tablei.
+\end{itemize}
+
+\subsection{Testul de terminare}
+
+Testul de terminare determină dacă o stare este terminală.
+
+Formal:
+
+\[
+Terminal(Stare)
+=
+true
+\]
+
+dacă jocul s-a încheiat.
+
+În caz contrar:
+
+\[
+Terminal(Stare)
+=
+false
+\]
+
+și procesul de căutare continuă.
+
+\subsection{Funcția de utilitate}
+
+Funcția de utilitate asociază o valoare numerică fiecărei stări terminale.
+
+Această valoare exprimă cât de favorabil este rezultatul pentru jucătorul MAX.
+
+Exemplu simplu:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Rezultat & Utilitate \\
+\hline
+Victorie MAX & +1 \\
+\hline
+Remiză & 0 \\
+\hline
+Victorie MIN & -1 \\
+\hline
+\end{tabular}
+\end{center}
+
+Scopul lui MAX este maximizarea utilității.
+
+Scopul lui MIN este minimizarea acesteia.
+
+\subsection{Exemplu: X și 0}
+
+O formulare simplificată pentru jocul X și 0 este:
+
+\begin{itemize}
+\item starea inițială: tabla goală;
+\item acțiuni: plasarea unui simbol într-o celulă liberă;
+\item funcția succesor: actualizarea tablei;
+\item test terminal: trei simboluri identice pe linie, coloană sau diagonală ori tablă completă;
+\item utilitate:
+    \begin{itemize}
+    \item +1 pentru victoria lui MAX;
+    \item 0 pentru remiză;
+    \item -1 pentru victoria lui MIN.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Concluzie}
+
+După formularea problemei putem genera toate evoluțiile posibile ale jocului.
+
+Aceste evoluții sunt reprezentate prin intermediul arborelui de joc, care constituie baza algoritmului MiniMax.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Arborele de joc}
+
+Pentru a determina cea mai bună mutare într-un joc, este necesară explorarea tuturor evoluțiilor posibile ale acestuia.
+
+Aceste evoluții sunt reprezentate prin intermediul arborelui de joc.
+
+Arborele de joc reprezintă o structură arborescentă care descrie toate mutările posibile ce pot fi efectuate pornind dintr-o anumită stare.
+
+\subsection{Definiție}
+
+Un arbore de joc este un arbore în care:
+
+\begin{itemize}
+\item rădăcina reprezintă starea curentă;
+\item fiecare muchie reprezintă o mutare;
+\item fiecare nod reprezintă o stare a jocului;
+\item frunzele reprezintă stări terminale sau stări evaluate.
+\end{itemize}
+
+Scopul algoritmilor de căutare este determinarea celui mai bun drum prin arbore.
+
+\subsection{Structura arborelui}
+
+Într-un arbore de joc distingem:
+
+\begin{itemize}
+\item nodul rădăcină;
+\item noduri interne;
+\item noduri frunză;
+\item muchii.
+\end{itemize}
+
+Fiecare nod intern poate genera unul sau mai mulți succesori.
+
+Numărul de succesori reprezintă factorul de ramificare al arborelui.
+
+\subsection{Alternarea jucătorilor}
+
+Nivelurile arborelui alternează între cei doi jucători.
+
+Astfel:
+
+\begin{itemize}
+\item nivelul 0 aparține lui MAX;
+\item nivelul 1 aparține lui MIN;
+\item nivelul 2 aparține lui MAX;
+\item nivelul 3 aparține lui MIN;
+\item și așa mai departe.
+\end{itemize}
+
+Fiecare jucător alege mutarea care îi maximizează propriul avantaj.
+
+\subsection{Exemplu simplu}
+
+Considerăm următorul arbore:
+
+\begin{verbatim}
+                                 MAX
+                    /-------------|-------------\
+                  MIN            MIN           MIN
+                /-----\        /-----\       /-----\
+              MAX    MAX     MAX    MAX    MAX     MAX
+             /  \    /  \   /  \   /  \   /  \    /  \
+            3    5  6    9 1    2 0    7 4    8  2    6
+\end{verbatim}
+
+Rădăcina reprezintă starea curentă.
+
+MAX trebuie să aleagă una dintre mutările disponibile.
+
+Pentru a lua decizia corectă este necesar să analizăm valorile care se propagă din frunze către rădăcină.
+
+\subsection{Frunzele arborelui}
+
+Frunzele sunt stările finale la care se poate ajunge.
+
+În aceste noduri nu mai există mutări disponibile.
+
+Fiecărei frunze i se asociază o valoare numerică denumită utilitate.
+
+Exemplu:
+
+\begin{itemize}
+\item +100 pentru victorie;
+\item 0 pentru remiză;
+\item -100 pentru înfrângere.
+\end{itemize}
+
+Aceste valori permit compararea diferitelor linii de joc.
+
+\subsection{Adâncimea arborelui}
+
+Adâncimea reprezintă numărul maxim de mutări analizate de la rădăcină până la o frunză.
+
+Cu cât adâncimea este mai mare:
+
+\begin{itemize}
+\item se analizează mai multe poziții;
+\item crește acuratețea deciziei;
+\item crește timpul necesar căutării.
+\end{itemize}
+
+În jocuri complexe precum șahul, explorarea completă a arborelui este imposibilă.
+
+Din acest motiv sunt utilizate limite de adâncime și funcții de evaluare.
+
+\subsection{Factorul de ramificare}
+
+Factorul de ramificare reprezintă numărul mediu de mutări posibile dintr-o stare.
+
+Exemple aproximative:
+
+\begin{itemize}
+\item X și 0: până la 9 mutări;
+\item dame: aproximativ 8 mutări;
+\item șah: aproximativ 35 mutări;
+\item Go: peste 200 mutări.
+\end{itemize}
+
+Un factor de ramificare mare conduce la creșterea rapidă a dimensiunii arborelui.
+
+\subsection{Generarea arborelui}
+
+Pornind de la starea curentă:
+
+\begin{enumerate}
+\item se generează toate acțiunile posibile;
+\item pentru fiecare acțiune se obține o stare nouă;
+\item procesul se repetă pentru fiecare succesor;
+\item se continuă până la atingerea unei stări terminale sau a unei limite de adâncime.
+\end{enumerate}
+
+Rezultatul este arborele de joc.
+
+\subsection{Importanța arborelui de joc}
+
+Arborele de joc reprezintă baza algoritmului MiniMax.
+
+Acesta permite simularea comportamentului celor doi jucători și determinarea mutării optime.
+
+Fără arborele de joc nu putem aplica algoritmi de căutare adversarială.
+
+\subsection{Concluzie}
+
+Arborele de joc descrie toate evoluțiile posibile ale unei partide.
+
+Fiecare nod reprezintă o stare, iar fiecare muchie reprezintă o mutare.
+
+Analizarea acestor arbori permite alegerea celei mai bune decizii prin intermediul algoritmului MiniMax.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Valoarea unei stări}
+
+În cadrul căutării adversariale, fiecare stare a jocului trebuie evaluată pentru a determina cât de favorabilă este pentru fiecare jucător.
+
+Această evaluare poartă numele de valoarea unei stări.
+
+Valoarea unei stări reprezintă o estimare numerică a avantajului pe care îl are un jucător într-o anumită poziție.
+
+\subsection{Scopul evaluării}
+
+Atunci când un agent trebuie să aleagă o mutare, acesta compară valorile stărilor care pot fi obținute.
+
+În general:
+
+\begin{itemize}
+\item valorile mari sunt favorabile pentru MAX;
+\item valorile mici sunt favorabile pentru MIN.
+\end{itemize}
+
+Prin urmare:
+
+\begin{itemize}
+\item MAX încearcă să maximizeze valoarea;
+\item MIN încearcă să minimizeze valoarea.
+\end{itemize}
+
+\subsection{Valori terminale}
+
+Pentru stările terminale, valoarea este cunoscută exact.
+
+Exemplu:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Rezultat & Valoare \\
+\hline
+Victorie MAX & +1 \\
+\hline
+Remiză & 0 \\
+\hline
+Victorie MIN & -1 \\
+\hline
+\end{tabular}
+\end{center}
+
+Aceste valori reprezintă utilitatea finală a jocului.
+
+\subsection{Valori pentru stări intermediare}
+
+Majoritatea stărilor întâlnite în arbore nu sunt terminale.
+
+În aceste situații trebuie determinată valoarea stării pe baza mutărilor care pot urma.
+
+Algoritmul MiniMax calculează această valoare propagând informația de la frunze către rădăcină.
+
+\subsection{Noduri MAX}
+
+Într-un nod MAX, jucătorul poate alege dintre mai multe mutări.
+
+Se presupune că va selecta mutarea cea mai avantajoasă.
+
+Prin urmare:
+
+\[
+Val(MAX)=\max(Val(Succesori))
+\]
+
+Exemplu:
+
+\begin{verbatim}
+      MAX
+     / | \
+    3  5  2
+\end{verbatim}
+
+Valoarea nodului este:
+
+\[
+Val(MAX)=5
+\]
+
+deoarece MAX va prefera valoarea cea mai mare.
+
+\subsection{Noduri MIN}
+
+Într-un nod MIN, adversarul încearcă să reducă avantajul lui MAX.
+
+Prin urmare:
+
+\[
+Val(MIN)=\min(Val(Succesori))
+\]
+
+Exemplu:
+
+\begin{verbatim}
+      MIN
+     / | \
+    3  5  2
+\end{verbatim}
+
+Valoarea nodului este:
+
+\[
+Val(MIN)=2
+\]
+
+deoarece MIN va selecta valoarea cea mai mică.
+
+\subsection{Exemplu complet}
+
+Considerăm arborele:
+
+\begin{verbatim}
+               MAX
+            /       \
+          MIN       MIN
+         /  \       /  \
+        3    5     2    9
+\end{verbatim}
+
+Calculăm:
+
+\[
+Val(MIN_{st})=\min(3,5)=3
+\]
+
+\[
+Val(MIN_{dr})=\min(2,9)=2
+\]
+
+Apoi:
+
+\[
+Val(MAX)=\max(3,2)=3
+\]
+
+Prin urmare, mutarea optimă pentru MAX este cea care conduce la valoarea 3.
+
+\subsection{Interpretarea valorilor}
+
+Semnul valorii este mai important decât valoarea absolută.
+
+În general:
+
+\begin{itemize}
+\item valoare pozitivă → avantaj pentru MAX;
+\item valoare negativă → avantaj pentru MIN;
+\item valoare apropiată de 0 → poziție echilibrată.
+\end{itemize}
+
+Exemplu:
+
+\begin{itemize}
+\item +100 poate indica o victorie aproape sigură pentru MAX;
+\item -100 poate indica o victorie aproape sigură pentru MIN;
+\item +5 poate reprezenta un avantaj redus pentru MAX.
+\end{itemize}
+
+\subsection{Propagarea valorilor}
+
+Ideea fundamentală a algoritmului MiniMax este propagarea valorilor de la frunzele arborelui către rădăcină.
+
+Procesul este:
+
+\begin{enumerate}
+\item se evaluează frunzele;
+\item se calculează valorile nodurilor MIN;
+\item se calculează valorile nodurilor MAX;
+\item se ajunge la valoarea rădăcinii.
+\end{enumerate}
+
+Valoarea obținută în rădăcină reprezintă rezultatul pe care MAX îl poate garanta dacă ambii jucători joacă optim.
+
+\subsection{Concluzie}
+
+Valoarea unei stări reprezintă fundamentul algoritmului MiniMax.
+
+Fiecare jucător presupune că adversarul va lua întotdeauna cea mai bună decizie pentru propriul interes, iar valoarea unui nod este calculată folosind operațiile de maxim și minim asupra succesorilor săi.
+
+
+
+
+
+
+\enddocument{}

@@ -1,0 +1,547 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 3\\Cautare Adversariala - Alpha-Beta Pruning}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Retezări în arborele de joc}
+
+Pe măsură ce adâncimea arborelui crește, numărul de stări analizate de MiniMax devine foarte mare.
+
+O idee importantă este eliminarea ramurilor care nu pot influența decizia finală.
+
+Acest proces poartă numele de retezare (pruning).
+
+\subsection{Idee}
+
+În timpul explorării arborelui pot exista noduri care nu mai trebuie analizate deoarece rezultatul lor nu va modifica alegerea optimă.
+
+Aceste ramuri sunt ignorate.
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item reduce numărul de noduri analizate;
+\item reduce timpul de execuție;
+\item permite explorarea unei adâncimi mai mari;
+\item păstrează aceeași soluție ca MiniMax.
+\end{itemize}
+
+\subsection{Exemplu}
+
+Considerăm un nod MIN care nu a fost explorat complet dar are deja valoarea:
+
+\[
+2
+\]
+
+Dacă MAX are deja o alternativă cu valoarea:
+
+\[
+5
+\]
+
+atunci ramura respectivă nu mai poate influența decizia finală și poate fi eliminată din analiză.
+
+\subsection{Concluzie}
+
+Retezarea permite reducerea costului algoritmului MiniMax prin evitarea explorării ramurilor inutile.
+
+Cea mai cunoscută tehnică de retezare este algoritmul Alpha-Beta Pruning.
+
+
+
+
+
+
+
+\section{Algoritmul Alpha-Beta Pruning}
+
+Alpha-Beta Pruning reprezintă o optimizare a algoritmului MiniMax care reduce numărul de noduri analizate fără a modifica rezultatul final.
+
+Algoritmul obține aceeași mutare optimă ca MiniMax, dar într-un timp mai scurt.
+
+\subsection{Ideea principală}
+
+În timpul explorării arborelui, anumite ramuri pot fi eliminate deoarece nu mai pot influența decizia finală.
+
+Aceste ramuri nu mai sunt evaluate.
+
+\subsection{Parametrii Alpha și Beta}
+
+Algoritmul utilizează două valori:
+
+\begin{itemize}
+\item $\alpha$ - cea mai bună valoare găsită până acum pentru MAX;
+\item $\beta$ - cea mai bună valoare găsită până acum pentru MIN.
+\end{itemize}
+
+Pe parcursul explorării:
+
+\[
+\alpha \leq \beta
+\]
+
+Dacă această condiție nu mai este respectată, căutarea se oprește pe ramura respectivă.
+
+\subsection{Condiția de retezare}
+
+O ramură poate fi eliminată atunci când:
+
+\[
+\alpha \geq \beta
+\]
+
+În acel moment știm că explorarea continuă nu poate schimba decizia finală.
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item reduce numărul de noduri analizate;
+\item reduce timpul de execuție;
+\item permite explorarea unor adâncimi mai mari;
+\item produce exact aceeași soluție ca MiniMax.
+\end{itemize}
+
+\subsection{Dezavantaj}
+
+Implementarea este puțin mai complexă decât cea a algoritmului MiniMax.
+
+\subsection{Concluzie}
+
+Alpha-Beta Pruning reprezintă cea mai importantă optimizare a algoritmului MiniMax și permite rezolvarea eficientă a jocurilor cu arbori de dimensiuni mari.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Implementarea Alpha-Beta Pruning}
+
+Alpha-Beta Pruning reprezintă o versiune optimizată a algoritmului MiniMax.
+
+Diferența principală constă în utilizarea limitelor Alpha și Beta pentru eliminarea ramurilor care nu mai pot influența rezultatul final.
+
+\subsection{Pseudocod}
+
+\begin{verbatim}
+AlphaBeta(stare, alpha, beta, jucator)
+
+    daca stare este terminala
+        returneaza utilitatea(stare)
+
+    daca jucator este MAX
+
+        valoare <- -infinit
+
+        pentru fiecare succesor
+
+            valoare <- max(
+                valoare,
+                AlphaBeta(
+                    succesor,
+                    alpha,
+                    beta,
+                    MIN
+                )
+            )
+
+            alpha <- max(alpha, valoare)
+
+            daca alpha >= beta
+                opreste cautarea
+
+        returneaza valoare
+
+    altfel
+
+        valoare <- +infinit
+
+        pentru fiecare succesor
+
+            valoare <- min(
+                valoare,
+                AlphaBeta(
+                    succesor,
+                    alpha,
+                    beta,
+                    MAX
+                )
+            )
+
+            beta <- min(beta, valoare)
+
+            daca alpha >= beta
+                opreste cautarea
+
+        returneaza valoare
+\end{verbatim}
+
+\subsection{Implementare în Python}
+
+\begin{verbatim}
+def alpha_beta(node,
+               depth,
+               alpha,
+               beta,
+               maximizing_player):
+
+    if depth == 0 or node.is_terminal():
+        return node.utility()
+
+    if maximizing_player:
+
+        value = float("-inf")
+
+        for child in node.children:
+
+            value = max(
+                value,
+                alpha_beta(
+                    child,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    False
+                )
+            )
+
+            alpha = max(alpha, value)
+
+            if alpha >= beta:
+                break
+
+        return value
+
+    else:
+
+        value = float("inf")
+
+        for child in node.children:
+
+            value = min(
+                value,
+                alpha_beta(
+                    child,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    True
+                )
+            )
+
+            beta = min(beta, value)
+
+            if alpha >= beta:
+                break
+
+        return value
+\end{verbatim}
+
+\subsection{Rolul parametrilor}
+
+\begin{itemize}
+\item alpha reprezintă cea mai bună valoare găsită până acum pentru MAX;
+\item beta reprezintă cea mai bună valoare găsită până acum pentru MIN;
+\item depth reprezintă limita de adâncime a căutării.
+\end{itemize}
+
+\subsection{Avantaj față de MiniMax}
+
+Alpha-Beta Pruning produce exact aceeași soluție ca MiniMax, dar analizează mai puține noduri.
+
+Prin eliminarea ramurilor inutile, algoritmul poate explora arbori mai adânci în același timp de execuție.
+
+\subsection{Concluzie}
+
+Alpha-Beta Pruning este cea mai utilizată optimizare a algoritmului MiniMax și reprezintă baza motoarelor moderne pentru jocuri precum șahul, damele sau X și 0.
+
+
+
+
+
+
+
+
+\section{Intuiția algoritmului Alpha-Beta}
+
+Alpha-Beta Pruning are aceeași idee de bază ca MiniMax, dar evită explorarea ramurilor care nu mai pot influența decizia finală.
+
+\subsection{Intuiție}
+
+În timpul căutării, dacă știm deja că o anumită mutare este mai slabă decât una analizată anterior, nu mai are sens să continuăm explorarea acelei ramuri.
+
+Aceasta poate fi eliminată.
+
+\subsection{Exemplu}
+
+Considerăm arborele:
+
+\begin{verbatim}
+          MAX
+         /   \
+       MIN   MIN
+      / \    / \
+     3   5  2   ?
+\end{verbatim}
+
+Ramura stângă oferă:
+
+\[
+MIN(3,5)=3
+\]
+
+Prin urmare:
+
+\[
+\alpha = 3
+\]
+
+Când analizăm ramura dreaptă, observăm imediat valoarea:
+
+\[
+2
+\]
+
+Întrucât nodul este MIN, valoarea finală a ramurii drepte va fi cel mult 2.
+
+MAX deține deja alternativa:
+
+\[
+3
+\]
+
+Astfel, restul ramurii poate fi ignorat deoarece nu va fi niciodată aleasă.
+
+\subsection{Rezultat}
+
+Alpha-Beta Pruning reduce numărul de noduri analizate fără a modifica alegerea finală.
+
+Algoritmul obține exact aceeași soluție ca MiniMax, dar într-un timp mai scurt.
+
+\subsection{Concluzie}
+
+Ideea esențială este simplă:
+
+\begin{quote}
+Nu analizăm ramurile despre care știm deja că nu pot influența decizia finală.
+\end{quote}
+
+Această optimizare permite explorarea unor arbori mult mai mari decât în cazul MiniMax clasic.
+
+
+
+
+\section{Exemple Alpha-Beta}
+
+\subsection{Exemplul 1}
+
+Considerăm arborele:
+
+\begin{verbatim}
+          MAX
+         /   \
+       MIN   MIN
+      / \    / \
+     3   5  2   9
+\end{verbatim}
+
+Ramura stângă este evaluată prima:
+
+\[
+MIN(3,5)=3
+\]
+
+Astfel:
+
+\[
+\alpha = 3
+\]
+
+În ramura dreaptă întâlnim valoarea:
+
+\[
+2
+\]
+
+Cum nodul aparține lui MIN și:
+
+\[
+2 < \alpha
+\]
+
+restul ramurii nu mai poate influența decizia lui MAX.
+
+Valoarea 9 nu mai trebuie evaluată.
+
+\subsection{Exemplul 2}
+
+Considerăm arborele:
+
+\begin{verbatim}
+                 MAX
+              /       \
+            MIN       MIN
+           /  \      /  |  \
+          3    5    2   4   8
+\end{verbatim}
+
+Pentru primul nod MIN:
+
+\[
+MIN(3,5)=3
+\]
+
+Prin urmare:
+
+\[
+\alpha = 3
+\]
+
+La al doilea nod MIN este analizată mai întâi valoarea:
+
+\[
+2
+\]
+
+Deoarece:
+
+\[
+2 < 3
+\]
+
+știm că rezultatul acelui nod va fi cel mult 2.
+
+Valorile 4 și 8 nu mai trebuie analizate.
+
+\subsection{Comparație cu MiniMax}
+
+MiniMax:
+
+\begin{itemize}
+\item analizează toate nodurile;
+\item garantează soluția optimă.
+\end{itemize}
+
+Alpha-Beta:
+
+\begin{itemize}
+\item elimină ramurile inutile;
+\item găsește aceeași soluție;
+\item analizează mai puține noduri.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Pe măsură ce dimensiunea arborelui crește, numărul de noduri eliminate poate deveni foarte mare.
+
+De aceea Alpha-Beta Pruning este mult mai eficient decât MiniMax pentru jocurile complexe.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Proprietățile algoritmului Alpha-Beta}
+
+Alpha-Beta Pruning păstrează toate proprietățile algoritmului MiniMax, dar reduce numărul de noduri analizate.
+
+\subsection{Completitudine}
+
+Algoritmul este complet.
+
+Dacă există o soluție și arborele este finit, aceasta va fi găsită.
+
+\subsection{Optimalitate}
+
+Algoritmul este optim.
+
+Rezultatul obținut este identic cu cel furnizat de MiniMax.
+
+Retezarea unor ramuri nu modifică mutarea finală aleasă.
+
+\subsection{Complexitatea în timp}
+
+În cel mai rău caz:
+
+\[
+O(b^d)
+\]
+
+adică aceeași complexitate ca MiniMax.
+
+În practică însă, numărul de noduri analizate este mult mai mic.
+
+În cel mai bun caz:
+
+\[
+O(b^{d/2})
+\]
+
+ceea ce permite explorarea unor arbori semnificativ mai adânci.
+
+\subsection{Complexitatea în spațiu}
+
+La fel ca MiniMax:
+
+\[
+O(b \cdot d)
+\]
+
+deoarece arborele este explorat folosind o strategie de tip Depth First Search.
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item produce aceeași soluție ca MiniMax;
+\item analizează mai puține noduri;
+\item reduce timpul de execuție;
+\item permite căutări mai adânci.
+\end{itemize}
+
+\subsection{Limitări}
+
+\begin{itemize}
+\item eficiența depinde de ordinea în care sunt analizate mutările;
+\item în cel mai rău caz nu oferă îmbunătățiri față de MiniMax;
+\item implementarea este puțin mai complexă.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Alpha-Beta Pruning reprezintă cea mai eficientă optimizare clasică a algoritmului MiniMax.
+
+Acesta păstrează completitudinea și optimalitatea, reducând în același timp numărul de noduri care trebuie explorate.
+
+
+\end{document}

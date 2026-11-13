@@ -1,0 +1,273 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 3\\Cautare Adversariala - Recapitulare si Exercitii}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Recapitulare}
+
+În acest tutoriat au fost prezentate principalele concepte utilizate în căutarea adversarială.
+
+\subsection{Concepte fundamentale}
+
+Am studiat:
+
+\begin{itemize}
+\item agenții inteligenți;
+\item mediile de lucru;
+\item jocurile cu doi jucători;
+\item jocurile cu sumă zero;
+\item formularea unei probleme de joc;
+\item arborele de joc.
+\end{itemize}
+
+\subsection{MiniMax}
+
+Algoritmul MiniMax:
+
+\begin{itemize}
+\item presupune că ambii jucători joacă optim;
+\item utilizează noduri MAX și MIN;
+\item propagă valorile de la frunze către rădăcină;
+\item determină mutarea optimă.
+\end{itemize}
+
+Reguli:
+
+\[
+MAX \rightarrow \max
+\]
+
+\[
+MIN \rightarrow \min
+\]
+
+\subsection{Limitările MiniMax}
+
+Principala problemă este creșterea exponențială a numărului de stări.
+
+\[
+O(b^d)
+\]
+
+unde:
+
+\begin{itemize}
+\item $b$ este factorul de ramificare;
+\item $d$ este adâncimea arborelui.
+\end{itemize}
+
+\subsection{Funcții de evaluare}
+
+Atunci când arborele nu poate fi explorat complet:
+
+\begin{itemize}
+\item se limitează adâncimea de căutare;
+\item se utilizează funcții de evaluare;
+\item stările sunt estimate în loc să fie evaluate exact.
+\end{itemize}
+
+\subsection{Alpha-Beta Pruning}
+
+Alpha-Beta este o optimizare a algoritmului MiniMax.
+
+Avantaje:
+
+\begin{itemize}
+\item elimină ramurile inutile;
+\item reduce timpul de execuție;
+\item păstrează aceeași soluție optimă;
+\item permite explorarea unor arbori mai adânci.
+\end{itemize}
+
+Condiția de retezare:
+
+\[
+\alpha \geq \beta
+\]
+
+\subsection{Idei de reținut}
+
+\begin{enumerate}
+\item Jocurile sunt modelate prin arbori de joc.
+\item MAX încearcă să maximizeze scorul.
+\item MIN încearcă să minimizeze scorul.
+\item MiniMax găsește strategia optimă.
+\item Funcțiile de evaluare permit limitarea adâncimii.
+\item Alpha-Beta Pruning accelerează MiniMax.
+\item Alpha-Beta produce aceeași soluție ca MiniMax, analizând mai puține noduri.
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Exerciții}
+
+\subsection{Exercițiul 1}
+
+Considerăm arborele:
+
+\begin{verbatim}
+          MAX
+         /   \
+       MIN   MIN
+      / \    / \
+     3   5  2   9
+\end{verbatim}
+
+Determinați valoarea fiecărui nod și valoarea rădăcinii folosind algoritmul MiniMax.
+
+\subsection{Exercițiul 2}
+
+Considerăm arborele:
+
+\begin{verbatim}
+              MAX
+           /       \
+         MIN       MIN
+        /  \       /  \
+       8    4     6    2
+\end{verbatim}
+
+Determinați:
+
+\begin{itemize}
+\item valorile nodurilor MIN;
+\item valoarea rădăcinii;
+\item mutarea optimă pentru MAX.
+\end{itemize}
+
+\subsection{Exercițiul 3}
+
+Pentru arborele:
+
+\begin{verbatim}
+                MAX
+             /       \
+           MIN       MIN
+          /  \       /  \
+        MAX  MAX   MAX  MAX
+        / \  / \   / \  / \
+       1  4 2  7  3  5 6  8
+\end{verbatim}
+
+Aplicați pas cu pas algoritmul MiniMax.
+
+\subsection{Exercițiul 4}
+
+Considerăm un joc cu următoarea funcție de utilitate:
+
+\begin{itemize}
+\item victorie MAX = +1;
+\item remiză = 0;
+\item victorie MIN = -1.
+\end{itemize}
+
+Ce valoare va avea o stare terminală în care MAX pierde?
+
+Dar una în care partida se termină la egalitate?
+
+\subsection{Exercițiul 5}
+
+Fie:
+
+\[
+b = 5 (branching factor)
+\]
+
+și
+
+\[
+d = 4 (depth)
+\]
+
+Determinați numărul aproximativ de noduri explorate de algoritmul MiniMax.
+
+\subsection{Exercițiul 6}
+
+Explicați diferența dintre:
+
+\begin{itemize}
+\item joc determinist;
+\item joc stochastic.
+\end{itemize}
+
+Dați câte un exemplu pentru fiecare situație.
+
+\subsection{Exercițiul 7}
+
+Explicați diferența dintre:
+
+\begin{itemize}
+\item joc cu informație completă;
+\item joc cu informație incompletă.
+\end{itemize}
+
+Dați exemple de jocuri pentru fiecare categorie.
+
+\subsection{Exercițiul 8}
+
+Considerăm arborele:
+
+\begin{verbatim}
+          MAX
+         /   \
+       MIN   MIN
+      / \    / \
+     3   7  2   8
+\end{verbatim}
+
+Indicați ce ramuri pot fi eliminate utilizând Alpha-Beta Pruning.
+
+Justificați răspunsul.
+
+\subsection{Exercițiul 9}
+
+Care este rolul parametrilor:
+
+\begin{itemize}
+\item alpha;
+\item beta.
+\end{itemize}
+
+În ce condiție se realizează retezarea unei ramuri?
+
+\subsection{Exercițiul 10}
+
+Explicați avantajele utilizării Alpha-Beta Pruning față de MiniMax.
+
+\subsection{Exercițiu recapitulativ}
+
+Completați spațiile libere:
+
+\begin{enumerate}
+\item MiniMax este utilizat pentru probleme de .................... .
+\item MAX încearcă să .................... valoarea unei stări.
+\item MIN încearcă să .................... valoarea unei stări.
+\item Jocurile studiate sunt de regulă jocuri  .................... .
+\item Funcțiile de evaluare sunt folosite atunci când .................... .
+\item Alpha-Beta Pruning produce aceeași soluție ca .................... .
+\item O ramură poate fi eliminată atunci când .................... .
+\end{enumerate}
+
+
+\end{document}

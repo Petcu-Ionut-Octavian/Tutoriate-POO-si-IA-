@@ -1,0 +1,992 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+\usepackage{amsmath}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 3\\Cautare Adversariala - Algoritmul MIN-MAX}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Algoritmul MiniMax}
+
+Algoritmul MiniMax este una dintre cele mai importante metode de căutare adversarială utilizate în Inteligența Artificială.
+
+Scopul algoritmului este determinarea mutării optime pentru un jucător presupunând că adversarul joacă întotdeauna perfect.
+
+MiniMax este utilizat în special pentru jocuri:
+
+\begin{itemize}
+\item cu doi jucători;
+\item cu informație completă;
+\item deterministe;
+\item cu sumă zero.
+\end{itemize}
+
+Exemple:
+
+\begin{itemize}
+\item șah;
+\item dame;
+\item X și 0;
+\item Connect Four;
+\item Reversi.
+\end{itemize}
+
+\subsection{Ideea de bază}
+
+Algoritmul presupune existența a doi jucători:
+
+\begin{itemize}
+\item MAX - încearcă să maximizeze scorul;
+\item MIN - încearcă să minimizeze scorul.
+\end{itemize}
+
+Fiecare jucător alege întotdeauna mutarea cea mai avantajoasă pentru propriul interes.
+
+MAX presupune că MIN va juca perfect.
+
+MIN presupune că MAX va juca perfect.
+
+\subsection{Principiul de funcționare}
+
+MiniMax explorează arborele de joc până la stările terminale.
+
+Valorile stărilor terminale sunt apoi propagate către rădăcină.
+
+Regula este:
+
+\begin{itemize}
+\item într-un nod MAX se alege valoarea maximă;
+\item într-un nod MIN se alege valoarea minimă.
+\end{itemize}
+
+Astfel se poate determina cea mai bună mutare disponibilă pentru MAX.
+
+\subsection{Exemplu}
+
+Considerăm următorul arbore:
+
+\begin{verbatim}
+                               MAX
+                    /-------------|-------------\
+                  MIN            MIN           MIN
+                /-----\        /-----\       /-----\
+              MAX    MAX     MAX    MAX    MAX    MAX
+             /  \    /  \   /  \   /  \   /  \   /  \
+            3    5  6    9 1    2 0    7 4    8 2    6
+\end{verbatim}
+
+
+Pasul 1: evaluăm nodurile MAX.
+
+\[
+max(3,5)=5
+\]
+
+\[
+max(6,9)=9
+\]
+
+\[
+max(1,2)=2
+\]
+
+\[
+max(0,7)=7
+\]
+
+\[
+max(4,8)=8
+\]
+
+\[
+max(2,6)=6
+\]
+
+Obținem:
+
+\begin{verbatim}
+                MAX
+           /------|------\
+         MIN     MIN     MIN
+        /  \    /  \    /  \
+       5    9  2    7  8    6
+\end{verbatim}
+
+Pasul 2: evaluăm nodurile MIN.
+
+\[
+min(5,9)=5
+\]
+
+\[
+min(2,7)=2
+\]
+
+\[
+min(8,6)=6
+\]
+
+Obținem:
+
+\begin{verbatim}
+               MAX
+            /   |   \
+           5    2    6
+\end{verbatim}
+
+Pasul 3: evaluăm rădăcina.
+
+\[
+max(5,2,6)=6
+\]
+
+Valoarea finală a rădăcinii este:
+
+\[
+6
+\]
+
+Prin urmare, MAX va selecta ramura care conduce la valoarea 6.
+
+\subsection{Intuiție}
+
+MAX încearcă să obțină cel mai mare scor posibil.
+
+MIN încearcă să împiedice acest lucru.
+
+Rezultatul final reprezintă cel mai bun scor pe care MAX îl poate garanta indiferent de răspunsul adversarului.
+
+\subsection{Strategia optimă}
+
+MiniMax nu caută mutarea care oferă cel mai bun rezultat posibil.
+
+MiniMax caută mutarea care oferă cel mai bun rezultat garantat.
+
+Aceasta este o diferență foarte importantă.
+
+Algoritmul presupune întotdeauna că adversarul va alege cea mai nefavorabilă mutare pentru noi.
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item produce decizii optime;
+\item garantează cea mai bună strategie în jocurile cu sumă zero;
+\item este simplu de înțeles și implementat;
+\item stă la baza multor algoritmi moderni pentru jocuri.
+\end{itemize}
+
+
+\subsection{Dezavantaje}
+
+\begin{itemize}
+\item necesită explorarea unui număr foarte mare de noduri;
+\item consumă mult timp pentru arbori mari;
+\item consumă memorie pentru jocuri complexe;
+\item devine impracticabil pentru jocuri cu factori mari de ramificare.
+\end{itemize}
+
+\subsection{Concluzie}
+
+MiniMax reprezintă algoritmul fundamental pentru căutarea adversarială.
+
+Ideea sa principală este propagarea valorilor din frunzele arborelui către rădăcină folosind operatorii maxim și minim.
+
+Din cauza costului ridicat de calcul, în practică MiniMax este adesea combinat cu funcții de evaluare și cu tehnica Alpha-Beta Pruning.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Formalizarea algoritmului MiniMax}
+
+Pentru a putea implementa algoritmul MiniMax, este necesară descrierea sa într-o formă matematică riguroasă.
+
+Formalizarea definește modul în care se calculează valoarea fiecărui nod din arborele de joc.
+
+\subsection{Ipoteze}
+
+Algoritmul MiniMax presupune că:
+
+\begin{itemize}
+\item există doi jucători: MAX și MIN;
+\item jocul este cu sumă zero;
+\item ambii jucători joacă optim;
+\item jocul este determinist;
+\item informația despre stare este completă.
+\end{itemize}
+
+\subsection{Valoarea unei stări}
+
+Fie o stare $s$.
+
+Vom nota prin:
+
+\[
+V(s)
+\]
+
+valoarea asociată stării respective.
+
+Această valoare reprezintă rezultatul pe care MAX îl poate garanta dacă ambii jucători joacă optim.
+
+\subsection{Stări terminale}
+
+Dacă starea este terminală, valoarea ei este dată direct de funcția de utilitate.
+
+\[
+V(s)=U(s)
+\]
+
+unde:
+
+\begin{itemize}
+\item $U(s)$ reprezintă funcția de utilitate;
+\item $s$ este o stare terminală.
+\end{itemize}
+
+Exemplu:
+
+\[
+U(s)=1
+\]
+
+pentru victoria lui MAX.
+
+\[
+U(s)=0
+\]
+
+pentru remiză.
+
+\[
+U(s)=-1
+\]
+
+pentru victoria lui MIN.
+
+\subsection{Noduri MAX}
+
+Dacă este rândul lui MAX să mute, acesta va alege succesorul cu valoarea cea mai mare.
+
+Formal:
+
+\[
+V(s)=\max_{s' \in Succ(s)} V(s')
+\]
+
+unde:
+
+\begin{itemize}
+\item $Succ(s)$ reprezintă mulțimea succesorilor lui $s$;
+\item $s'$ reprezintă un succesor al lui $s$.
+\end{itemize}
+
+Exemplu:
+
+\begin{verbatim}
+      MAX
+     / | \
+    2  7  4
+\end{verbatim}
+
+Atunci:
+
+\[
+V(MAX)=\max(2,7,4)=7
+\]
+
+\subsection{Noduri MIN}
+
+Dacă este rândul lui MIN să mute, acesta va alege succesorul cu valoarea cea mai mică.
+
+Formal:
+
+\[
+V(s)=\min_{s' \in Succ(s)} V(s')
+\]
+
+Exemplu:
+
+\begin{verbatim}
+      MIN
+     / | \
+    2  7  4
+\end{verbatim}
+
+Atunci:
+
+\[
+V(MIN)=\min(2,7,4)=2
+\]
+
+\subsection{Definiția recursivă a MiniMax}
+
+Algoritmul poate fi definit recursiv astfel:
+
+\[
+MiniMax(s)=
+\begin{cases}
+U(s), & \text{dacă } s \text{ este terminală} \\\\
+\max\limits_{s' \in Succ(s)} MiniMax(s'),
+& \text{dacă } s \text{ este nod MAX} \\\\
+\min\limits_{s' \in Succ(s)} MiniMax(s'),
+& \text{dacă } s \text{ este nod MIN}
+\end{cases}
+\]
+
+Această definiție constituie baza tuturor implementărilor MiniMax.
+
+\subsection{Calculul valorilor}
+
+Calculul începe întotdeauna din frunzele arborelui.
+
+Pașii sunt:
+
+\begin{enumerate}
+\item evaluarea stărilor terminale;
+\item calculul valorilor nodurilor MIN;
+\item calculul valorilor nodurilor MAX;
+\item propagarea valorilor până la rădăcină.
+\end{enumerate}
+
+Procesul este numit propagare inversă (back-propagation of values).
+
+\subsection{Exemplu}
+
+Considerăm arborele:
+
+\begin{verbatim}
+               MAX
+            /       \
+          MIN       MIN
+         /  \       /  \
+        3    5     2    9
+\end{verbatim}
+
+Calculăm:
+
+\[
+V(MIN_1)=\min(3,5)=3
+\]
+
+\[
+V(MIN_2)=\min(2,9)=2
+\]
+
+Apoi:
+
+\[
+V(MAX)=\max(3,2)=3
+\]
+
+Prin urmare:
+
+\[
+MiniMax(MAX)=3
+\]
+
+\subsection{Semnificația valorii rădăcinii}
+
+Valoarea rădăcinii reprezintă rezultatul pe care MAX îl poate garanta indiferent de modul în care adversarul încearcă să îl împiedice.
+
+Aceasta nu este neapărat cea mai bună valoare posibilă, ci cea mai bună valoare garantată.
+
+\subsection{Concluzie}
+
+Formalizarea MiniMax transformă problema jocului într-o problemă de optimizare recursivă.
+
+MAX aplică operația de maximizare, MIN aplică operația de minimizare, iar valorile sunt propagate din frunzele arborelui către rădăcină până la obținerea strategiei optime.
+
+
+
+
+
+
+
+
+
+
+
+\section{Implementarea algoritmului MiniMax}
+
+După definirea formală a algoritmului MiniMax, următorul pas este implementarea acestuia.
+
+MiniMax este un algoritm recursiv care explorează arborele de joc și propagă valorile de la frunze către rădăcină.
+
+Ideea principală este:
+
+\begin{itemize}
+\item dacă nodul aparține lui MAX, se alege valoarea maximă;
+\item dacă nodul aparține lui MIN, se alege valoarea minimă;
+\item dacă s-a ajuns într-o stare terminală, se returnează utilitatea acesteia.
+\end{itemize}
+
+\subsection{Pseudocod}
+
+\begin{verbatim}
+MiniMax(stare, jucator)
+
+    daca stare este terminala
+        returneaza utilitatea(stare)
+
+    daca jucator este MAX
+
+        ceaMaiBunaValoare <- -infinit
+
+        pentru fiecare succesor
+            ceaMaiBunaValoare <-
+                max(ceaMaiBunaValoare,
+                    MiniMax(succesor, MIN))
+
+        returneaza ceaMaiBunaValoare
+
+    altfel
+
+        ceaMaiBunaValoare <- +infinit
+
+        pentru fiecare succesor
+            ceaMaiBunaValoare <-
+                min(ceaMaiBunaValoare,
+                    MiniMax(succesor, MAX))
+
+        returneaza ceaMaiBunaValoare
+\end{verbatim}
+
+\subsection{Implementare în Python}
+
+O implementare simplificată a algoritmului MiniMax poate fi scrisă astfel:
+
+\begin{verbatim}
+def minimax(node, maximizing_player):
+
+    if node.is_terminal():
+        return node.utility()
+
+    if maximizing_player:
+
+        best_value = float("-inf")
+
+        for child in node.children:
+            value = minimax(child, False)
+            best_value = max(best_value, value)
+
+        return best_value
+
+    else:
+
+        best_value = float("inf")
+
+        for child in node.children:
+            value = minimax(child, True)
+            best_value = min(best_value, value)
+
+        return best_value
+\end{verbatim}
+
+\subsection{Explicația implementării}
+
+Funcția primește:
+
+\begin{itemize}
+\item nodul curent;
+\item informația dacă este rândul lui MAX sau al lui MIN.
+\end{itemize}
+
+Dacă nodul este terminal, se returnează valoarea utilității.
+
+Dacă este rândul lui MAX:
+
+\begin{itemize}
+\item se explorează toți succesorii;
+\item se calculează recursiv valorile acestora;
+\item se păstrează valoarea maximă.
+\end{itemize}
+
+Dacă este rândul lui MIN:
+
+\begin{itemize}
+\item se explorează toți succesorii;
+\item se calculează recursiv valorile acestora;
+\item se păstrează valoarea minimă.
+\end{itemize}
+
+\subsection{Exemplu de arbore}
+
+Considerăm arborele:
+
+\begin{verbatim}
+               MAX
+            /       \
+          MIN       MIN
+         /  \       /  \
+        3    5     2    9
+\end{verbatim}
+
+Calcul:
+
+\[
+MIN(3,5)=3
+\]
+
+\[
+MIN(2,9)=2
+\]
+
+\[
+MAX(3,2)=3
+\]
+
+Algoritmul va returna valoarea:
+
+\[
+3
+\]
+
+și va selecta ramura din stânga.
+
+\subsection{Complexitate}
+
+Pentru un factor de ramificare b și o adâncime d:
+
+\[
+O(b^d)
+\]
+
+Numărul de stări analizate crește exponențial cu adâncimea arborelui.
+
+Acesta este principalul motiv pentru care MiniMax devine dificil de utilizat în jocuri foarte complexe.
+
+\subsection{Observație}
+
+În practică, MiniMax este aproape întotdeauna combinat cu:
+
+\begin{itemize}
+\item limitarea adâncimii de căutare;
+\item funcții de evaluare;
+\item Alpha-Beta Pruning.
+\end{itemize}
+
+Aceste tehnici reduc semnificativ timpul necesar pentru luarea unei decizii.
+
+
+
+
+
+
+
+
+
+
+\section{Exemple MiniMax}
+
+În această secțiune vom analiza mai multe exemple de aplicare a algoritmului MiniMax pentru a înțelege modul în care sunt calculate valorile nodurilor și cum este aleasă mutarea optimă.
+
+\subsection{Exemplul 1}
+
+Considerăm următorul arbore:
+
+\begin{verbatim}
+               MAX
+            /       \
+          MIN       MIN
+         /  \       /  \
+        3    5     2    9
+\end{verbatim}
+
+Calculăm valorile nodurilor MIN:
+
+\[
+MIN(3,5)=3
+\]
+
+\[
+MIN(2,9)=2
+\]
+
+Apoi calculăm valoarea rădăcinii:
+
+\[
+MAX(3,2)=3
+\]
+
+Rezultat:
+
+\[
+V(MAX)=3
+\]
+
+Mutarea optimă este ramura stângă.
+
+\subsection{Exemplul 2}
+
+Considerăm un arbore cu un nivel suplimentar:
+
+\begin{verbatim}
+                    MAX
+                 /       \
+               MIN       MIN
+              /  \       /  \
+            MAX  MAX   MAX  MAX
+            / \  / \   / \  / \
+           3  5 2  6  1  4 7  8
+\end{verbatim}
+
+Calculăm valorile nodurilor MAX:
+
+\[
+MAX(3,5)=5
+\]
+
+\[
+MAX(2,6)=6
+\]
+
+\[
+MAX(1,4)=4
+\]
+
+\[
+MAX(7,8)=8
+\]
+
+Obținem:
+
+\begin{verbatim}
+                MAX
+             /       \
+           MIN       MIN
+          /  \       /  \
+         5    6     4    8
+\end{verbatim}
+
+Calculăm valorile nodurilor MIN:
+
+\[
+MIN(5,6)=5
+\]
+
+\[
+MIN(4,8)=4
+\]
+
+Apoi:
+
+\[
+MAX(5,4)=5
+\]
+
+Rezultatul final este:
+
+\[
+V(MAX)=5
+\]
+
+\subsection{Exemplul 3}
+
+Considerăm arborele:
+
+\begin{verbatim}
+                               MAX
+                    /-------------|-------------\
+                  MIN            MIN           MIN
+                /-----\        /-----\       /-----\
+              MAX    MAX     MAX    MAX    MAX    MAX
+             /  \    /  \   /  \   /  \   /  \   /  \
+            3    5  6    9 1    2 0    7 4    8 2    6
+\end{verbatim}
+
+Evaluăm nodurile MAX:
+
+\[
+max(3,5)=5
+\]
+
+\[
+max(6,9)=9
+\]
+
+\[
+max(1,2)=2
+\]
+
+\[
+max(0,7)=7
+\]
+
+\[
+max(4,8)=8
+\]
+
+\[
+max(2,6)=6
+\]
+
+Rezultatul devine:
+
+\begin{verbatim}
+                MAX
+           /------|------\
+         MIN     MIN     MIN
+        /  \    /  \    /  \
+       5    9  2    7  8    6
+\end{verbatim}
+
+Calculăm nodurile MIN:
+
+\[
+min(5,9)=5
+\]
+
+\[
+min(2,7)=2
+\]
+
+\[
+min(8,6)=6
+\]
+
+Obținem:
+
+\begin{verbatim}
+               MAX
+            /   |   \
+           5    2    6
+\end{verbatim}
+
+Valoarea rădăcinii:
+
+\[
+max(5,2,6)=6
+\]
+
+Prin urmare:
+
+\[
+V(MAX)=6
+\]
+
+MAX va alege a treia ramură.
+
+\subsection{Observație}
+
+În toate exemplele calculul se realizează de jos în sus:
+
+\begin{enumerate}
+\item evaluăm frunzele;
+\item calculăm nodurile MAX;
+\item calculăm nodurile MIN;
+\item determinăm valoarea rădăcinii.
+\end{enumerate}
+
+Această propagare a valorilor reprezintă mecanismul fundamental al algoritmului MiniMax.
+
+\subsection{Concluzie}
+
+MiniMax permite determinarea mutării optime presupunând că adversarul joacă perfect.
+
+Valoarea calculată în rădăcina arborelui reprezintă cel mai bun rezultat pe care jucătorul MAX îl poate garanta indiferent de răspunsul adversarului.
+
+
+
+
+
+
+
+
+
+
+\section{Proprietățile algoritmului MiniMax}
+
+Algoritmul MiniMax permite determinarea mutării optime într-un joc cu doi jucători presupunând că ambii participanți joacă perfect.
+
+Analiza proprietăților sale este importantă deoarece evidențiază atât avantajele, cât și limitările metodei.
+
+\subsection{Completitudine}
+
+MiniMax este un algoritm complet.
+
+Dacă arborele de joc este finit și poate fi explorat integral, algoritmul va găsi întotdeauna o soluție.
+
+Cu alte cuvinte, dacă există o mutare optimă, MiniMax o va determina.
+
+\subsection{Optimalitate}
+
+MiniMax este un algoritm optim.
+
+Presupunând că:
+
+\begin{itemize}
+\item ambii jucători joacă perfect;
+\item arborele este explorat complet;
+\item valorile terminale sunt corecte;
+\end{itemize}
+
+algoritmul returnează strategia optimă pentru jucătorul MAX.
+
+Rezultatul obținut reprezintă cea mai bună valoare garantată.
+
+\subsection{Strategie conservatoare}
+
+MiniMax este un algoritm pesimist.
+
+Atunci când analizează o mutare, MAX presupune întotdeauna că adversarul va alege răspunsul cel mai nefavorabil pentru el.
+
+Astfel, algoritmul nu caută cel mai bun rezultat posibil, ci cel mai bun rezultat garantat.
+
+\subsection{Complexitatea în timp}
+
+Fie:
+
+\begin{itemize}
+\item b = factorul de ramificare;
+\item d = adâncimea arborelui.
+\end{itemize}
+
+Complexitatea temporală este:
+
+\[
+O(b^d)
+\]
+
+Numărul de stări analizate crește exponențial cu adâncimea.
+
+Exemplu:
+
+\[
+b=10,\quad d=6
+\]
+
+Numărul aproximativ de noduri analizate este:
+
+\[
+10^6 = 1\,000\,000
+\]
+
+Acest cost devine rapid foarte mare pentru jocurile complexe.
+
+\subsection{Complexitatea în spațiu}
+
+MiniMax utilizează o explorare de tip Depth First Search (DFS).
+
+Prin urmare, complexitatea spațială este:
+
+\[
+O(b \cdot d)
+\]
+
+Memoria necesară este semnificativ mai mică decât timpul de execuție.
+
+\subsection{Avantaje}
+
+Principalele avantaje sunt:
+
+\begin{itemize}
+\item garantează alegerea mutării optime;
+\item are o fundamentare matematică riguroasă;
+\item poate fi implementat relativ ușor;
+\item reprezintă baza multor algoritmi moderni pentru jocuri.
+\end{itemize}
+
+\subsection{Dezavantaje}
+
+Principalele dezavantaje sunt:
+
+\begin{itemize}
+\item cost computațional foarte ridicat;
+\item explorarea completă a arborelui este adesea imposibilă;
+\item timpul crește exponențial cu adâncimea;
+\item devine impracticabil pentru jocuri cu factor mare de ramificare.
+\end{itemize}
+
+\subsection{Exemplu: Șah}
+
+În șah, factorul mediu de ramificare este aproximativ:
+
+\[
+b \approx 35
+\]
+
+Pentru o adâncime de numai 8 mutări:
+
+\[
+35^8 \approx 2.25 \times 10^{12}
+\]
+
+Numărul de poziții este enorm.
+
+Explorarea completă devine imposibilă chiar și pe calculatoare foarte puternice.
+
+\subsection{Consecințe practice}
+
+Din cauza complexității ridicate, MiniMax este rar utilizat singur.
+
+În practică sunt introduse tehnici suplimentare:
+
+\begin{itemize}
+\item limitarea adâncimii de căutare;
+\item funcții de evaluare;
+\item Alpha-Beta Pruning.
+\end{itemize}
+
+Aceste tehnici reduc dramatic numărul de stări analizate.
+
+\subsection{Rezumat}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Proprietate & Valoare \\
+\hline
+Completitudine & Da \\
+\hline
+Optimalitate & Da \\
+\hline
+Complexitate timp & $O(b^d)$ \\
+\hline
+Complexitate spațiu & $O(b \cdot d)$ \\
+\hline
+Strategie & MAX vs MIN \\
+\hline
+\end{tabular}
+\end{center}
+
+MiniMax este un algoritm complet și optim, însă costul său exponențial reprezintă principala limitare și motivația introducerii tehnicii Alpha-Beta Pruning.
+
+
+
+
+
+
+
+\enddocument{}

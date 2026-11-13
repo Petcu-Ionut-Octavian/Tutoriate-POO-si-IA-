@@ -1,0 +1,380 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 3\\Cautare Adversariala - Compromis intre timp si calitate}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Limitări date de resurse}
+
+Deși algoritmul MiniMax produce decizii optime, utilizarea sa practică este limitată de resursele de calcul disponibile.
+
+În jocurile complexe, numărul stărilor care trebuie explorate crește foarte rapid, ceea ce face imposibilă analiza completă a arborelui de joc.
+
+\subsection{Explozia combinatorială}
+
+Principala problemă a algoritmului MiniMax este explozia combinatorială.
+
+La fiecare nivel al arborelui apar noi mutări posibile, iar numărul total de stări crește exponențial.
+
+Dacă:
+
+\begin{itemize} 
+\item $b$ = factorul de ramificare; 
+\item $d$ = adâncimea arborelui. 
+\end{itemize}
+
+atunci numărul aproximativ de noduri explorate este:
+
+\[
+b^d
+\]
+
+Această creștere exponențială reprezintă principala limitare a algoritmului.
+
+\subsection{Exemplu numeric}
+
+Presupunem:
+
+\[
+b = 10
+\]
+
+și
+
+\[
+d = 6
+\]
+
+Numărul de stări analizate devine:
+
+\[
+10^6 = 1\,000\,000
+\]
+
+Dacă adâncimea crește la:
+
+\[
+d = 10
+\]
+
+atunci:
+
+\[
+10^{10}
+=
+10\,000\,000\,000
+\]
+
+Numărul de poziții devine uriaș.
+
+\subsection{Problema în șah}
+
+În șah, factorul mediu de ramificare este aproximativ:
+
+\[
+b \approx 35
+\]
+
+Pentru o analiză de numai 8 mutări:
+
+\[
+35^8
+\approx
+2.25 \times 10^{12}
+\]
+
+Numărul de poziții este mult prea mare pentru a fi evaluat complet într-un timp rezonabil.
+
+\subsection{Limitările de timp}
+
+Calculul tuturor nodurilor poate necesita foarte mult timp.
+
+În aplicațiile reale, deciziile trebuie luate rapid.
+
+Exemple:
+
+\begin{itemize}
+\item un motor de șah trebuie să răspundă în câteva secunde;
+\item un joc video trebuie să răspundă aproape instantaneu;
+\item un sistem autonom trebuie să reacționeze în timp real.
+\end{itemize}
+
+Din acest motiv, explorarea completă a arborelui nu este practică.
+
+\subsection{Limitările de memorie}
+
+Pe lângă timpul de execuție, apare și problema memoriei.
+
+Pe măsură ce arborele crește:
+
+\begin{itemize}
+\item trebuie generate mai multe stări;
+\item trebuie memorate informații despre succesorii acestora;
+\item costul de stocare crește.
+\end{itemize}
+
+Pentru jocuri complexe, memoria disponibilă poate deveni insuficientă.
+
+\subsection{Compromisul între timp și calitate}
+
+În practică există un compromis între:
+
+\begin{itemize}
+\item calitatea deciziei;
+\item timpul de calcul.
+\end{itemize}
+
+O adâncime mai mare:
+
+\begin{itemize}
+\item oferă decizii mai bune;
+\item necesită mai mult timp.
+\end{itemize}
+
+O adâncime mai mică:
+
+\begin{itemize}
+\item reduce timpul de calcul;
+\item poate conduce la decizii mai puțin precise.
+\end{itemize}
+
+\subsection{Soluții utilizate în practică}
+
+Pentru a depăși limitările de resurse se utilizează:
+
+\begin{itemize}
+\item limitarea adâncimii de căutare;
+\item funcții de evaluare;
+\item Alpha-Beta Pruning;
+\item ordonarea mutărilor (Analizarea mai întâi a mutărilor promițătoare pentru a crește eficiența algoritmului Alpha-Beta);
+\item tabele de transpoziție (Structuri de date care memorează pozițiile deja evaluate pentru a evita recalcularea acelorași stări.).
+\end{itemize}
+
+Aceste tehnici permit explorarea doar a celor mai promițătoare ramuri ale arborelui.
+
+\subsection{Concluzie}
+
+MiniMax oferă rezultate optime doar atunci când poate explora complet arborele de joc.
+
+În aplicațiile reale acest lucru este rareori posibil din cauza limitărilor de timp și memorie.
+
+Din acest motiv sunt necesare metode suplimentare care reduc numărul de stări analizate și permit luarea unor decizii bune într-un timp rezonabil.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Căutarea în adâncime limitată}
+
+Din cauza dimensiunii foarte mari a arborilor de joc, explorarea completă folosind MiniMax este adesea imposibilă.
+
+O soluție este limitarea adâncimii de căutare.
+
+\subsection{Idee}
+
+În loc să explorăm arborele până la stările terminale, ne oprim la o adâncime prestabilită.
+
+\[
+d = limita\ de\ adancime
+\]
+
+Nodurile aflate la această adâncime sunt evaluate folosind o funcție de evaluare.
+
+\subsection{Exemplu}
+
+Dacă limita este:
+
+\[
+d = 3
+\]
+
+algoritmul analizează doar primele trei niveluri ale arborelui.
+
+Toate nodurile de la nivelul 3 sunt evaluate și utilizate de MiniMax pentru alegerea mutării.
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item reduce timpul de execuție;
+\item reduce numărul de stări analizate;
+\item permite utilizarea MiniMax în jocuri complexe.
+\end{itemize}
+
+\subsection{Dezavantaje}
+
+\begin{itemize}
+\item nu mai garantează soluția optimă;
+\item calitatea deciziei depinde de funcția de evaluare;
+\item pot fi ignorate evenimente importante aflate mai adânc în arbore.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Căutarea în adâncime limitată reprezintă metoda principală prin care MiniMax poate fi utilizat în probleme reale, sacrificând o parte din acuratețe pentru a obține un timp de răspuns acceptabil.
+
+
+
+
+
+
+
+
+
+\section{Funcții de evaluare}
+
+În multe jocuri, explorarea completă a arborelui până la stările terminale este imposibilă.
+
+Din acest motiv, MiniMax este oprit la o anumită adâncime, iar pozițiile rezultate sunt evaluate folosind o funcție de evaluare.
+
+\subsection{Definiție}
+
+O funcție de evaluare estimează cât de favorabilă este o stare pentru jucătorul MAX.
+
+Aceasta asociază fiecărei stări o valoare numerică.
+
+\[
+Eval(s)
+\]
+
+unde $s$ reprezintă starea analizată.
+
+\subsection{Interpretarea valorilor}
+
+În general:
+
+\begin{itemize}
+\item valori pozitive → avantaj pentru MAX;
+\item valori negative → avantaj pentru MIN;
+\item valori apropiate de 0 → poziție echilibrată.
+\end{itemize}
+
+Exemplu:
+
+\[
+Eval(s)=50
+\]
+
+indică un avantaj pentru MAX.
+
+\[
+Eval(s)=-50
+\]
+
+indică un avantaj pentru MIN.
+
+\subsection{Caracteristici}
+
+O funcție de evaluare trebuie să fie:
+
+\begin{itemize}
+\item rapidă;
+\item ușor de calculat;
+\item corelată cu șansele reale de câștig;
+\item capabilă să distingă pozițiile bune de cele slabe.
+\end{itemize}
+
+\subsection{Funcții de evaluare pentru șah}
+
+În șah, o funcție de evaluare estimează avantajul unei poziții pe baza valorii pieselor.
+
+Un exemplu simplu este:
+
+\[
+Eval(s)=9Q+5T+3N+3B+P
+\]
+
+unde:
+
+\begin{itemize}
+\item Q = numărul de regine;
+\item T = numărul de ture;
+\item N = numărul de cai;
+\item B = numărul de nebuni;
+\item P = numărul de pioni.
+\end{itemize}
+
+Scorul final se obține calculând diferența dintre piesele lui MAX și cele ale lui MIN.
+
+\subsection{Funcții de evaluare pentru X și 0}
+
+În jocul X și 0, o funcție de evaluare poate număra liniile care pot conduce la victorie.
+
+Exemplu:
+
+\[
+Eval(s)
+=
+Linii_{MAX}
+-
+Linii_{MIN}
+\]
+
+unde:
+
+\begin{itemize}
+\item $Linii_{MAX}$ reprezintă liniile încă deschise pentru MAX;
+\item $Linii_{MIN}$ reprezintă liniile încă deschise pentru MIN.
+\end{itemize}
+
+Cu cât valoarea este mai mare, cu atât poziția este mai favorabilă pentru MAX.
+
+\subsection{Utilizare în MiniMax}
+
+Atunci când se atinge limita de adâncime:
+
+\[
+d = d_{max}
+\]
+
+algoritmul nu mai generează succesori.
+
+În schimb, aplică funcția de evaluare și utilizează valoarea obținută ca și cum ar fi valoarea unei stări terminale.
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item reduc timpul de calcul;
+\item permit analizarea jocurilor complexe;
+\item oferă estimări rapide ale pozițiilor.
+\end{itemize}
+
+\subsection{Dezavantaje}
+
+\begin{itemize}
+\item reprezintă doar o aproximare;
+\item pot evalua greșit anumite poziții;
+\item calitatea rezultatului depinde de calitatea funcției de evaluare.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Funcțiile de evaluare permit utilizarea practică a algoritmului MiniMax prin înlocuirea evaluării exacte a pozițiilor cu estimări rapide ale calității unei stări.
+
+
+
+
+\end{document}
