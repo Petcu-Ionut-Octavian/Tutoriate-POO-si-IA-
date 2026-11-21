@@ -96,7 +96,7 @@ def ex3_marginalizare():
     print("\nDistribuția marginală\n")
     print(marginala)
 
-# ex3_marginalizare()
+ex3_marginalizare()
 
 
 # ========================================================
@@ -260,7 +260,7 @@ def ex8_independenta():
 
     print(df)
 
-# ex8_independenta()
+ex8_independenta()
 
 
 # ========================================================
