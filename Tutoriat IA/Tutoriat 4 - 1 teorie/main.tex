@@ -1,0 +1,1933 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 4\\Raționament în condiții de incertitudine}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Introducere}
+
+În numeroase probleme reale, un agent inteligent trebuie să ia decizii în condiții de incertitudine.
+
+De multe ori informațiile disponibile sunt incomplete, zgomotoase sau nesigure, ceea ce face imposibilă determinarea exactă a stării mediului.
+
+\subsection{Motivație}
+
+Considerăm următoarele situații:
+
+\begin{itemize}
+\item un sistem medical încearcă să stabilească un diagnostic pe baza simptomelor;
+\item un automobil autonom identifică obstacole folosind senzori;
+\item un robot trebuie să determine poziția unui obiect;
+\item un sistem meteo estimează probabilitatea de ploaie.
+\end{itemize}
+
+În toate aceste cazuri există informații incomplete despre starea reală a lumii.
+
+\subsection{Incertitudinea}
+
+Incertitudinea apare atunci când agentul nu poate observa direct toate informațiile relevante sau când observațiile sunt afectate de erori.
+
+Exemple:
+
+\begin{itemize}
+\item senzori imperfecți;
+\item date lipsă;
+\item măsurători zgomotoase;
+\item evenimente aleatoare.
+\end{itemize}
+
+Pentru a gestiona aceste situații sunt utilizate metode probabilistice.
+
+\subsection{Probabilități}
+
+Probabilitățile permit reprezentarea gradului de încredere asociat unui eveniment.
+
+O probabilitate este un număr cuprins între:
+
+\[
+0 \leq P(A) \leq 1
+\]
+
+unde:
+
+\begin{itemize}
+\item 0 reprezintă un eveniment imposibil;
+\item 1 reprezintă un eveniment cert.
+\end{itemize}
+
+\subsection{Scopul sistemelor probabilistice}
+
+Un sistem inteligent utilizează probabilitățile pentru:
+
+\begin{itemize}
+\item reprezentarea cunoștințelor incerte;
+\item actualizarea credințelor pe baza observațiilor;
+\item estimarea evenimentelor neobservabile;
+\item luarea deciziilor în condiții de incertitudine.
+\end{itemize}
+
+\subsection{Concepte studiate}
+
+În acest tutoriat vom introduce:
+
+\begin{itemize}
+\item variabile aleatoare;
+\item repartiții de probabilitate;
+\item probabilități condiționate;
+\item inferență probabilistă;
+\item regula lui Bayes;
+\item independență și independență condiționată;
+\item rețele Bayesiene.
+\end{itemize}
+
+Aceste concepte stau la baza majorității sistemelor moderne de Inteligență Artificială care trebuie să raționeze în prezența incertitudinii.
+
+
+
+
+
+
+\section{Incertitudine în Inteligența Artificială}
+
+Una dintre provocările fundamentale ale Inteligenței Artificiale este gestionarea incertitudinii.
+
+În multe situații, un agent nu dispune de informații complete despre mediul în care operează și trebuie să ia decizii pe baza unor observații incomplete sau inexacte.
+
+\subsection{Surse ale incertitudinii}
+
+Incertitudinea poate apărea din mai multe motive:
+
+\begin{itemize}
+\item informații lipsă;
+\item senzori imperfecți;
+\item măsurători eronate;
+\item evenimente aleatoare;
+\item modele incomplete ale mediului.
+\end{itemize}
+
+\subsection{Exemple}
+
+Exemple de situații care implică incertitudine:
+
+\begin{itemize}
+\item diagnosticarea unei boli pe baza simptomelor;
+\item estimarea traficului rutier;
+\item prognoza meteo;
+\item recunoașterea obiectelor într-o imagine;
+\item localizarea unui robot într-un mediu necunoscut.
+\end{itemize}
+
+\subsection{Limitele logicii clasice}
+
+În logica clasică, o afirmație este fie adevărată, fie falsă.
+
+În multe probleme reale această abordare nu este suficientă.
+
+Exemplu:
+
+\begin{verbatim}
+Pacientul are gripa.
+\end{verbatim}
+
+În practică nu știm cu certitudine dacă afirmația este adevărată sau falsă.
+
+Putem doar estima probabilitatea ca aceasta să fie adevărată.
+
+\subsection{Abordarea probabilistică}
+
+Pentru gestionarea incertitudinii se utilizează teoria probabilităților.
+
+Aceasta permite reprezentarea gradului de încredere asociat diferitelor ipoteze.
+
+Exemplu:
+
+\[
+P(Gripa)=0.8
+\]
+
+Interpretarea este că există o probabilitate de 80\% ca pacientul să aibă gripă.
+
+\subsection{Avantajele modelelor probabilistice}
+
+\begin{itemize}
+\item permit reprezentarea informațiilor incomplete;
+\item modelează evenimente aleatoare;
+\item pot actualiza cunoștințele pe baza unor observații noi;
+\item oferă suport pentru luarea deciziilor în condiții de incertitudine.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Gestionarea incertitudinii reprezintă un element esențial al Inteligenței Artificiale moderne.
+
+Pentru modelarea acesteia sunt utilizate variabile aleatoare, probabilități condiționate, inferență probabilistă și rețele Bayesiene.
+
+
+
+
+
+\section{Variabile aleatoare}
+
+Pentru a modela incertitudinea, teoria probabilităților utilizează variabile aleatoare.
+
+O variabilă aleatoare reprezintă o variabilă care poate lua valori diferite, fiecare fiind asociată unei probabilități.
+
+\subsection{Definiție}
+
+O variabilă aleatoare descrie rezultatul unui experiment sau al unui fenomen incert.
+
+De regulă este notată cu litere mari:
+
+\[
+X,\;Y,\;Z
+\]
+
+Valorile pe care le poate lua sunt notate cu litere mici:
+
+\[
+x,\;y,\;z
+\]
+
+\subsection{Exemple}
+
+Exemple de variabile aleatoare:
+
+\begin{itemize}
+\item rezultatul aruncării unui zar;
+\item starea vremii;
+\item prezența unei boli;
+\item câștigarea unei partide.
+\end{itemize}
+
+\subsection{Variabile aleatoare discrete}
+
+O variabilă aleatoare discretă poate lua un număr finit sau numărabil de valori.
+
+Exemplu:
+
+\[
+Zar \in \{1,2,3,4,5,6\}
+\]
+
+Probabilitățile asociate sunt:
+
+\[
+P(Zar=1)=\frac{1}{6}
+\]
+
+\[
+P(Zar=2)=\frac{1}{6}
+\]
+
+și așa mai departe.
+
+\subsection{Variabile aleatoare binare}
+
+Un caz particular foarte important este reprezentat de variabilele binare.
+
+Acestea pot lua doar două valori.
+
+Exemplu:
+
+\[
+Ploua \in \{Da, Nu\}
+\]
+
+sau
+
+\[
+Boala \in \{Adevarat, Fals\}
+\]
+
+Variabilele binare sunt utilizate frecvent în Rețelele Bayesiene.
+
+\subsection{Domeniul unei variabile}
+
+Mulțimea tuturor valorilor posibile ale unei variabile aleatoare poartă numele de domeniu.
+
+Exemplu:
+
+\[
+Dom(Vreme)=
+\{Soare,\;Ploaie,\;Ninsoare\}
+\]
+
+\subsection{Probabilități asociate}
+
+Fiecărei valori îi este asociată o probabilitate.
+
+Exemplu:
+
+\[
+P(Vreme=Soare)=0.6
+\]
+
+\[
+P(Vreme=Ploaie)=0.3
+\]
+
+\[
+P(Vreme=Ninsoare)=0.1
+\]
+
+Suma probabilităților trebuie să fie egală cu 1.
+
+\[
+0.6+0.3+0.1=1
+\]
+
+\subsection{Concluzie}
+
+Variabilele aleatoare permit reprezentarea fenomenelor incerte și constituie elementul de bază al modelelor probabilistice utilizate în Inteligența Artificială.
+
+
+
+\section{Repartiții de probabilitate}
+
+O variabilă aleatoare poate lua mai multe valori posibile.
+
+Pentru a descrie cât de probabilă este fiecare valoare, folosim o repartiție de probabilitate.
+
+\subsection{Definiție}
+
+O repartiție de probabilitate asociază fiecărei valori posibile a unei variabile aleatoare o probabilitate.
+
+Exemplu:
+
+Fie variabila:
+
+\[
+Zar \in \{1,2,3,4,5,6\}
+\]
+
+Repartiția de probabilitate este:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Valoare & Probabilitate \\
+\hline
+1 & 1/6 \\
+2 & 1/6 \\
+3 & 1/6 \\
+4 & 1/6 \\
+5 & 1/6 \\
+6 & 1/6 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Proprietăți}
+
+Orice repartiție de probabilitate trebuie să respecte două condiții:
+
+\begin{enumerate}
+\item toate probabilitățile sunt cuprinse între 0 și 1;
+\item suma tuturor probabilităților este egală cu 1.
+\end{enumerate}
+
+Formal:
+
+\[
+0 \le P(X=x) \le 1
+\]
+
+și
+
+\[
+\sum_x P(X=x)=1
+\]
+
+\subsection{Exemplu}
+
+Considerăm variabila:
+
+\[
+Vreme \in
+\{Soare, Ploaie, Ninsoare\}
+\]
+
+cu repartiția:
+
+\[
+P(Soare)=0.6
+\]
+
+\[
+P(Ploaie)=0.3
+\]
+
+\[
+P(Ninsoare)=0.1
+\]
+
+Observăm că:
+
+\[
+0.6+0.3+0.1=1
+\]
+
+deci repartiția este validă.
+
+\subsection{Interpretare}
+
+Repartiția de probabilitate descrie tot ceea ce știm despre o variabilă aleatoare.
+
+Pe baza acesteia putem calcula probabilitatea diferitelor evenimente și putem efectua inferență probabilistă.
+
+\subsection{Concluzie}
+
+Repartițiile de probabilitate reprezintă modul standard de reprezentare a incertitudinii și constituie baza tuturor modelelor probabilistice utilizate în Inteligența Artificială.
+
+
+
+
+\section{Repartiții multidimensionale}
+
+Până acum am analizat probabilitățile asociate unei singure variabile aleatoare.
+
+În multe probleme reale avem însă mai multe variabile care trebuie descrise simultan.
+
+În aceste situații folosim repartiții multidimensionale.
+
+\subsection{Definiție}
+
+O repartiție multidimensională descrie probabilitățile asociate mai multor variabile aleatoare.
+
+Exemplu:
+
+\[
+P(X,Y)
+\]
+
+unde:
+
+\begin{itemize}
+\item X și Y sunt variabile aleatoare;
+\item probabilitățile sunt asociate combinațiilor de valori ale celor două variabile.
+\end{itemize}
+
+\subsection{Exemplu}
+
+Considerăm variabilele:
+
+\[
+Ploua \in \{Da, Nu\}
+\]
+
+\[
+Trafic \in \{Mare, Mic\}
+\]
+
+Repartiția comună poate fi:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Plouă & Trafic & Probabilitate \\
+\hline
+Da & Mare & 0.4 \\
+Da & Mic & 0.1 \\
+Nu & Mare & 0.2 \\
+Nu & Mic & 0.3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Proprietate}
+
+Suma tuturor probabilităților din repartiția comună trebuie să fie egală cu 1.
+
+\[
+0.4+0.1+0.2+0.3=1
+\]
+
+\subsection{Interpretare}
+
+Din tabel putem observa, de exemplu:
+
+\[
+P(Ploua=Da,\;Trafic=Mare)=0.4
+\]
+
+Aceasta reprezintă probabilitatea ca cele două evenimente să se producă simultan.
+
+\subsection{Problema dimensionalității}
+
+Pe măsură ce numărul variabilelor crește, dimensiunea repartiției crește foarte rapid.
+
+Pentru n variabile binare sunt necesare:
+
+\[
+2^n
+\]
+
+probabilități.
+
+Exemplu:
+
+\begin{itemize}
+\item 5 variabile → $2^5=32$ valori;
+\item 10 variabile → $2^{10}=1024$ valori.
+\end{itemize}
+
+Această creștere rapidă reprezintă una dintre principalele provocări ale modelelor probabilistice.
+
+\subsection{Concluzie}
+
+Repartițiile multidimensionale descriu probabilitățile asociate unui grup de variabile aleatoare și stau la baza inferenței probabilistice și a Rețelelor Bayesiene.
+
+
+
+
+
+
+
+
+\section{Evenimente}
+
+În teoria probabilităților, un eveniment reprezintă un rezultat sau un grup de rezultate care pot apărea în urma unui experiment aleator.
+
+Evenimentele sunt utilizate pentru formularea întrebărilor despre variabilele aleatoare.
+
+\subsection{Definiție}
+
+Un eveniment este o mulțime de valori posibile ale unei variabile aleatoare.
+
+Probabilitatea unui eveniment se notează:
+
+\[
+P(A)
+\]
+
+unde A reprezintă evenimentul analizat.
+
+\subsection{Exemplu}
+
+Considerăm variabila:
+
+\[
+Zar \in \{1,2,3,4,5,6\}
+\]
+
+Evenimentul:
+
+\[
+A = \{2,4,6\}
+\]
+
+reprezintă apariția unui număr par.
+
+Probabilitatea sa este:
+
+\[
+P(A)=\frac{3}{6}=0.5
+\]
+
+\subsection{Eveniment sigur}
+
+Un eveniment sigur apare întotdeauna.
+
+Exemplu:
+
+\[
+A=\{1,2,3,4,5,6\}
+\]
+
+Pentru un zar:
+
+\[
+P(A)=1
+\]
+
+\subsection{Eveniment imposibil}
+
+Un eveniment imposibil nu poate apărea niciodată.
+
+Exemplu:
+
+\[
+A=\{7\}
+\]
+
+la aruncarea unui zar standard.
+
+\[
+P(A)=0
+\]
+
+\subsection{Complementul unui eveniment}
+
+Complementul unui eveniment reprezintă situația în care evenimentul nu are loc.
+
+Se notează:
+
+\[
+\neg A
+\]
+
+sau
+
+\[
+A^c
+\]
+
+și se calculează prin:
+
+\[
+P(\neg A)=1-P(A)
+\]
+
+Exemplu:
+
+\[
+P(A)=0.7
+\]
+
+atunci:
+
+\[
+P(\neg A)=0.3
+\]
+
+\subsection{Evenimente reunite}
+
+Probabilitatea ca unul dintre două evenimente să se producă este:
+
+\[
+P(A \cup B)
+\]
+
+Pentru evenimente incompatibile:
+
+\[
+P(A \cup B)=P(A)+P(B)
+\]
+
+\subsection{Evenimente simultane}
+
+Probabilitatea ca două evenimente să se producă simultan este:
+
+\[
+P(A \cap B)
+\]
+
+Această noțiune va fi utilizată în definirea probabilităților condiționate și a regulii lui Bayes.
+
+\subsection{Concluzie}
+
+Evenimentele reprezintă obiectele fundamentale asupra cărora definim probabilități și permit formularea întrebărilor la care sistemele probabilistice încearcă să răspundă.
+
+
+
+
+
+
+
+
+
+
+\section{Repartiții marginale}
+
+O repartiție marginală descrie probabilitățile asociate unei singure variabile atunci când pornim de la o repartiție comună care conține mai multe variabile.
+
+Aceasta se obține prin eliminarea celorlalte variabile din distribuție.
+
+\subsection{Motivație}
+
+În multe situații cunoaștem o repartiție comună:
+
+\[
+P(X,Y)
+\]
+
+dar suntem interesați doar de probabilitățile asociate unei singure variabile.
+
+În acest caz calculăm repartiția marginală.
+
+\subsection{Exemplu}
+
+Considerăm repartiția comună:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Plouă & Trafic & Probabilitate \\
+\hline
+Da & Mare & 0.4 \\
+Da & Mic & 0.1 \\
+Nu & Mare & 0.2 \\
+Nu & Mic & 0.3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Calculul repartiției marginale}
+
+Pentru variabila:
+
+\[
+Ploua
+\]
+
+adunăm toate probabilitățile care corespund fiecărei valori.
+
+Pentru:
+
+\[
+Ploua=Da
+\]
+
+obținem:
+
+\[
+P(Ploua=Da)=0.4+0.1=0.5
+\]
+
+Pentru:
+
+\[
+Ploua=Nu
+\]
+
+obținem:
+
+\[
+P(Ploua=Nu)=0.2+0.3=0.5
+\]
+
+Repartiția marginală devine:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Plouă & Probabilitate \\
+\hline
+Da & 0.5 \\
+Nu & 0.5 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Formula generală}
+
+Pentru două variabile:
+
+\[
+P(X)
+=
+\sum_y P(X,y)
+\]
+
+adică adunăm probabilitățile pentru toate valorile posibile ale lui Y.
+
+\subsection{Interpretare}
+
+Repartiția marginală oferă informații despre o variabilă fără a ține cont de valorile celorlalte variabile.
+
+Astfel, obținem probabilitatea unui eveniment indiferent de contextul asociat celorlalte variabile.
+
+\subsection{Concluzie}
+
+Repartițiile marginale se obțin prin însumarea probabilităților dintr-o repartiție comună și permit studierea unei singure variabile dintr-un model probabilistic.
+
+
+
+
+
+
+
+
+\section{Repartiții condiționate}
+
+În multe situații dorim să calculăm probabilitatea unui eveniment cunoscând faptul că un alt eveniment s-a produs deja.
+
+Pentru astfel de cazuri folosim repartițiile condiționate.
+
+\subsection{Definiție}
+
+Probabilitatea condiționată reprezintă probabilitatea unui eveniment în condițiile în care deținem informații suplimentare.
+
+Se notează:
+
+\[
+P(A|B)
+\]
+
+și se citește:
+
+„probabilitatea lui A știind că B s-a produs”.
+
+\subsection{Formula}
+
+Probabilitatea condiționată este definită prin:
+
+\[
+P(A|B)
+=
+\frac{P(A \cap B)}
+     {P(B)}
+\]
+
+unde:
+
+\[
+P(B) > 0
+\]
+
+\subsection{Exemplu}
+
+Considerăm:
+
+\begin{itemize}
+\item probabilitatea de ploaie: 0.3;
+\item probabilitatea de ploaie și trafic mare: 0.24.
+\end{itemize}
+
+Dorim să calculăm:
+
+\[
+P(Trafic=Mare \mid Ploaie)
+\]
+
+Aplicăm formula:
+
+\[
+P(Trafic=Mare \mid Ploaie)
+=
+\frac{0.24}{0.3}
+=
+0.8
+\]
+
+Rezultă că atunci când plouă, probabilitatea unui trafic mare este 80\%.
+
+\subsection{Interpretare}
+
+Probabilitatea condiționată actualizează informațiile disponibile după observarea unui eveniment.
+
+Astfel, în loc să analizăm întregul spațiu al rezultatelor, ne concentrăm doar asupra situațiilor compatibile cu evenimentul observat.
+
+\subsection{Relația cu repartițiile comune}
+
+Probabilitățile condiționate și cele comune sunt strâns legate.
+
+Din formula anterioară rezultă:
+
+\[
+P(A \cap B)
+=
+P(A|B)\cdot P(B)
+\]
+
+Această relație va fi utilizată frecvent în inferența probabilistă.
+
+\subsection{Exemplu intuitiv}
+
+Fie evenimentele:
+
+\[ A = \{\mbox{Studentul a promovat examenul}\} \] 
+
+\[ B = \{\mbox{Studentul a participat la curs}\} \]
+
+Probabilitatea:
+
+\[
+P(A)
+\]
+
+reprezintă șansa de promovare pentru orice student.
+
+Probabilitatea:
+
+\[
+P(A|B)
+\]
+
+reprezintă șansa de promovare pentru un student despre care știm deja că a participat la curs.
+
+\subsection{Concluzie}
+
+Repartițiile condiționate permit actualizarea probabilităților pe baza informațiilor observate și constituie fundamentul inferenței probabilistice și al regulii lui Bayes.
+
+
+
+
+
+
+
+
+
+
+\section{Normalizare}
+
+În multe probleme de inferență probabilistă obținem valori care sunt proporționale cu probabilitățile reale, dar a căror sumă nu este egală cu 1.
+
+Pentru a obține o repartiție validă este necesară normalizarea.
+
+\subsection{Definiție}
+
+Normalizarea reprezintă procesul prin care transformăm un set de valori astfel încât suma lor să fie egală cu 1.
+
+\subsection{Exemplu}
+
+Presupunem că am obținut următoarele valori:
+
+\[
+P(A)=0.3
+\]
+
+\[
+P(B)=0.2
+\]
+
+Suma este:
+
+\[
+0.3+0.2=0.5
+\]
+
+Aceasta nu reprezintă încă o repartiție de probabilitate validă.
+
+\subsection{Calcul}
+
+Determinăm constanta de normalizare:
+
+\[
+\alpha=\frac{1}{0.5}=2
+\]
+
+Apoi multiplicăm fiecare valoare cu \(\alpha\):
+
+\[
+P(A)=0.3 \cdot 2 = 0.6
+\]
+
+\[
+P(B)=0.2 \cdot 2 = 0.4
+\]
+
+Verificare:
+
+\[
+0.6+0.4=1
+\]
+
+\subsection{Formula generală}
+
+Fie valorile:
+
+\[
+x_1,x_2,\dots,x_n
+\]
+
+Constanta de normalizare este:
+
+\[
+\alpha
+=
+\frac{1}
+{\sum_i x_i}
+\]
+
+Valorile normalizate devin:
+
+\[
+P_i=\alpha \cdot x_i
+\]
+
+\subsection{Utilizare}
+
+Normalizarea este utilizată frecvent în:
+
+\begin{itemize}
+\item probabilități condiționate;
+\item regula lui Bayes;
+\item inferență probabilistă;
+\item rețele Bayesiene.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Normalizarea transformă un set de valori proporționale într-o repartiție de probabilitate validă, asigurând că suma tuturor probabilităților este egală cu 1.
+
+
+
+
+
+
+
+
+
+\section{Inferența probabilistă}
+
+Inferența probabilistă reprezintă procesul prin care determinăm probabilități necunoscute pe baza informațiilor disponibile.
+
+Scopul este estimarea unor variabile sau evenimente care nu pot fi observate direct.
+
+\subsection{Ideea principală}
+
+Pornim de la:
+
+\begin{itemize}
+\item un model probabilistic;
+\item informații cunoscute (evidențe);
+\item probabilități deja disponibile.
+\end{itemize}
+
+Utilizând aceste informații calculăm probabilități noi.
+
+\subsection{Exemplu}
+
+Considerăm variabilele:
+
+\[
+Boala
+\]
+
+și
+
+\[
+TestPozitiv
+\]
+
+Observăm rezultatul:
+
+\[
+TestPozitiv = Da
+\]
+
+și dorim să aflăm:
+
+\[
+P(Boala \mid TestPozitiv)
+\]
+
+Aceasta reprezintă o problemă de inferență probabilistă.
+
+\subsection{Tipuri de întrebări}
+
+Exemple de întrebări la care răspunde inferența:
+
+\begin{itemize}
+\item Care este probabilitatea să plouă?
+\item Care este probabilitatea unei boli?
+\item Care este probabilitatea existenței traficului?
+\item Care este probabilitatea unei erori într-un sistem?
+\end{itemize}
+
+\subsection{Metode utilizate}
+
+Pentru realizarea inferenței sunt utilizate:
+
+\begin{itemize}
+\item repartiții marginale;
+\item probabilități condiționate;
+\item regula de înmulțire;
+\item regula lui Bayes;
+\item Rețele Bayesiene.
+\end{itemize}
+
+\subsection{Exemplu simplu}
+
+Fie:
+
+\[
+P(Ploaie)=0.3
+\]
+
+și
+
+\[
+P(Trafic=Mare \mid Ploaie)=0.8
+\]
+
+Putem estima probabilitatea apariției unui trafic mare atunci când observăm ploaia.
+
+Acesta este un exemplu de inferență probabilistă.
+
+\subsection{Concluzie}
+
+Inferența probabilistă reprezintă mecanismul prin care sunt obținute informații noi pornind de la probabilitățile existente și de la evidențele observate, fiind una dintre cele mai importante componente ale sistemelor inteligente care operează în condiții de incertitudine.
+
+
+
+
+
+\section{Inferența prin enumerare}
+
+Inferența prin enumerare este o metodă simplă de calcul al probabilităților necunoscute prin parcurgerea tuturor valorilor posibile ale variabilelor relevante.
+
+Ideea principală este de a calcula probabilitatea cerută prin însumarea tuturor cazurilor compatibile.
+
+\subsection{Idee}
+
+Pornim de la o probabilitate pe care dorim să o calculăm.
+
+Dacă există variabile neobservate, luăm în considerare toate valorile pe care acestea le pot avea.
+
+Apoi adunăm probabilitățile corespunzătoare.
+
+\subsection{Exemplu}
+
+Presupunem că avem două variabile:
+
+\[
+P(A|B)
+\]
+
+și dorim să calculăm:
+
+\[
+P(A)
+\]
+
+Aplicăm marginalizarea:
+
+\[
+P(A)
+=
+\sum_B P(A|B)
+\]
+
+adică însumăm probabilitățile pentru toate valorile posibile ale lui B.
+
+\subsection{Exemplu numeric}
+
+Considerăm:
+
+\[
+P(A|B=0)=0.3
+\]
+
+\[
+P(A|B=1)=0.2
+\]
+
+Atunci:
+
+\[
+P(A)
+=
+0.3+0.2
+=
+0.5
+\]
+
+\subsection{Pașii algoritmului}
+
+\begin{enumerate}
+\item identificăm variabila căutată;
+\item identificăm variabilele neobservate;
+\item generăm toate valorile posibile ale acestora;
+\item calculăm probabilitățile asociate;
+\item însumăm rezultatele.
+\end{enumerate}
+
+\subsection{Avantaj}
+
+Metoda este simplă și produce rezultate exacte.
+
+\subsection{Dezavantaj}
+
+Numărul de calcule crește foarte rapid odată cu numărul variabilelor.
+
+Pentru multe variabile, enumerarea completă devine ineficientă.
+
+\subsection{Concluzie}
+
+Inferența prin enumerare calculează probabilități prin generarea tuturor combinațiilor posibile ale variabilelor neobservate și reprezintă una dintre cele mai simple metode de inferență probabilistă.
+
+
+
+
+\section{Formula de înmulțire}
+
+Formula de înmulțire reprezintă relația fundamentală dintre probabilitățile comune și probabilitățile condiționate.
+
+Aceasta permite calcularea probabilității producerii simultane a două evenimente.
+
+\subsection{Formula}
+
+Pornind de la definiția probabilității condiționate:
+
+\[
+P(A|B)
+=
+\frac{P(A \cap B)}
+     {P(B)}
+\]
+
+obținem:
+
+\[
+P(A \cap B)
+=
+P(A|B)\cdot P(B)
+\]
+
+Aceasta este formula de înmulțire.
+
+\subsection{Interpretare}
+
+Pentru a calcula probabilitatea producerii simultane a două evenimente:
+
+\[
+A
+\]
+
+și
+
+\[
+B
+\]
+
+înmulțim:
+
+\begin{itemize}
+\item probabilitatea lui B;
+\item probabilitatea lui A știind că B s-a produs.
+\end{itemize}
+
+\subsection{Exemplu}
+
+Considerăm:
+
+\[
+P(Ploaie)=0.3
+\]
+
+și
+
+\[
+P(Trafic=Mare|Ploaie)=0.8
+\]
+
+Aplicând formula de înmulțire:
+
+\[
+P(Trafic=Mare \cap Ploaie)
+=
+0.8 \cdot 0.3
+=
+0.24
+\]
+
+Rezultă că probabilitatea apariției simultane a ploii și a traficului mare este 24\%.
+
+\subsection{Generalizare}
+
+Pentru trei evenimente:
+
+\[
+A,B,C
+\]
+
+obținem:
+
+\[
+P(A \cap B \cap C)
+=
+P(A|B,C)
+\cdot
+P(B|C)
+\cdot
+P(C)
+\]
+
+Această relație stă la baza regulii de înlănțuire.
+
+\subsection{Concluzie}
+
+Formula de înmulțire permite transformarea probabilităților condiționate în probabilități comune și reprezintă un instrument esențial pentru inferența probabilistă.
+
+
+
+\section{Regula de înlănțuire}
+
+Regula de înlănțuire (Chain Rule) permite descompunerea unei probabilități comune complexe într-un produs de probabilități condiționate.
+
+Aceasta reprezintă una dintre relațiile fundamentale utilizate în modelele probabilistice și în Rețelele Bayesiene.
+
+\subsection{Două variabile}
+
+Pentru două evenimente:
+
+\[
+A
+\]
+
+și
+
+\[
+B
+\]
+
+regula de înlănțuire este:
+
+\[
+P(A,B)
+=
+P(A|B)\cdot P(B)
+\]
+
+sau echivalent:
+
+\[
+P(A,B)
+=
+P(B|A)\cdot P(A)
+\]
+
+\subsection{Trei variabile}
+
+Pentru trei variabile:
+
+\[
+A,B,C
+\]
+
+obținem:
+
+\[
+P(A,B,C)
+=
+P(A|B,C)
+\cdot
+P(B|C)
+\cdot
+P(C)
+\]
+
+Astfel, probabilitatea comună este exprimată prin probabilități condiționate mai simple.
+
+\subsection{Forma generală}
+
+Pentru un set de variabile:
+
+\[
+X_1,X_2,\dots,X_n
+\]
+
+regula de înlănțuire devine:
+
+\[
+P(X_1,\dots,X_n)
+=
+\prod_{i=1}^{n}
+P(X_i|X_1,\dots,X_{i-1})
+\]
+
+Această formulă permite descompunerea unei repartiții multidimensionale în factori mai mici.
+
+\subsection{Exemplu}
+
+Pentru variabilele:
+
+\[
+Ploaie,
+Trafic,
+Intarziere
+\]
+
+putem scrie:
+
+\[
+P(Ploaie,
+Trafic,
+Intarziere)
+=
+P(Intarziere|Trafic,Ploaie)
+\cdot
+P(Trafic|Ploaie)
+\cdot
+P(Ploaie)
+\]
+
+\subsection{Importanță}
+
+Regula de înlănțuire:
+
+\begin{itemize}
+\item simplifică reprezentarea distribuțiilor complexe;
+\item stă la baza Rețelelor Bayesiene;
+\item permite efectuarea inferenței probabilistice;
+\item reduce numărul de probabilități care trebuie memorate.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Regula de înlănțuire permite exprimarea unei probabilități comune ca produs de probabilități condiționate și reprezintă fundamentul matematic al modelelor probabilistice utilizate în Inteligența Artificială.
+
+
+
+
+\section{Regula lui Bayes}
+
+Regula lui Bayes reprezintă una dintre cele mai importante relații din teoria probabilităților.
+
+Aceasta permite calcularea unei probabilități condiționate pornind de la alte probabilități cunoscute.
+
+\subsection{Formula}
+
+Regula lui Bayes este:
+
+\[
+P(A|B)
+=
+\frac
+{P(B|A)\cdot P(A)}
+{P(B)}
+\]
+
+unde:
+
+\begin{itemize}
+\item $P(A)$ reprezintă probabilitatea inițială a lui A;
+\item $P(B)$ reprezintă probabilitatea lui B;
+\item $P(B|A)$ reprezintă probabilitatea lui B dacă A este adevărat;
+\item $P(A|B)$ reprezintă probabilitatea lui A după observarea lui B.
+\end{itemize}
+
+\subsection{Interpretare}
+
+Regula lui Bayes permite actualizarea unei probabilități atunci când apare o informație nouă.
+
+Astfel:
+
+\[
+P(A)
+\]
+
+reprezintă credința inițială,
+
+iar
+
+\[
+P(A|B)
+\]
+
+reprezintă credința actualizată după observarea lui B.
+
+\subsection{Exemplu}
+
+Considerăm:
+
+\[
+P(Boala)=0.01
+\]
+
+\[
+P(TestPozitiv|Boala)=0.9
+\]
+
+\[
+P(TestPozitiv)=0.0585
+\]
+
+Aplicăm regula lui Bayes:
+
+\[
+P(Boala|TestPozitiv)
+=
+\frac
+{0.9 \cdot 0.01}
+{0.0585}
+\approx 0.154
+\]
+
+Rezultă că probabilitatea existenței bolii după un test pozitiv este aproximativ 15.4\%.
+
+\subsection{Observație}
+
+Regula lui Bayes permite transformarea unei probabilități de forma:
+
+\[
+P(B|A)
+\]
+
+într-o probabilitate de forma:
+
+\[
+P(A|B)
+\]
+
+adică inversează sensul condiționării.
+
+\subsection{Importanță}
+
+Regula lui Bayes este utilizată în:
+
+\begin{itemize}
+\item diagnostic medical;
+\item filtrarea mesajelor spam;
+\item sisteme expert (un program care încearcă să ia decizii asemănător unui expert uman dintr-un anumit domeniu);
+\item recunoașterea imaginilor;
+\item Rețele Bayesiene.
+\end{itemize}
+
+\subsection{Concluzie}
+
+Regula lui Bayes reprezintă mecanismul fundamental prin care probabilitățile sunt actualizate pe baza unor observații noi și constituie baza inferenței probabilistice moderne.
+
+
+
+\section{Modele probabiliste}
+
+Un model probabilist reprezintă o descriere matematică a unui sistem incert folosind variabile aleatoare și probabilități.
+
+Scopul unui astfel de model este de a reprezenta cunoștințele disponibile și relațiile dintre diferite evenimente.
+
+\subsection{Definiție}
+
+Un model probabilist conține:
+
+\begin{itemize}
+\item variabile aleatoare;
+\item domeniile acestora;
+\item probabilitățile asociate;
+\item relațiile dintre variabile.
+\end{itemize}
+
+Prin intermediul modelului putem estima probabilitatea unor evenimente și putem efectua inferență.
+
+\subsection{Exemplu}
+
+Considerăm variabilele:
+
+\[
+Ploaie
+\]
+
+și
+
+\[
+Trafic
+\]
+
+Putem construi un model care descrie influența ploii asupra traficului.
+
+Exemple de probabilități:
+
+\[
+P(Ploaie)=0.3
+\]
+
+\[
+P(Trafic=Mare|Ploaie)=0.8
+\]
+
+\[
+P(Trafic=Mare|\neg Ploaie)=0.2
+\]
+
+\subsection{Rolul modelelor probabiliste}
+
+Modelele probabiliste permit:
+
+\begin{itemize}
+\item reprezentarea incertitudinii;
+\item estimarea probabilităților necunoscute;
+\item actualizarea informațiilor după noi observații;
+\item luarea deciziilor în condiții de incertitudine.
+\end{itemize}
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item pot reprezenta informații incomplete;
+\item sunt flexibile;
+\item permit utilizarea regulii lui Bayes;
+\item stau la baza Rețelelor Bayesiene.
+\end{itemize}
+
+\subsection{Exemple de aplicații}
+
+Modelele probabiliste sunt utilizate în:
+
+\begin{itemize}
+\item diagnostic medical;
+\item filtrarea mesajelor spam;
+\item recunoașterea imaginilor;
+\item sisteme de recomandare;
+\item prognoză meteo.
+\end{itemize}
+
+
+
+
+
+
+\section{Independența}
+
+Două evenimente sunt independente dacă apariția unuia dintre ele nu influențează probabilitatea producerii celuilalt.
+
+Cu alte cuvinte, cunoașterea unuia dintre evenimente nu oferă informații suplimentare despre celălalt.
+
+\subsection{Definiție}
+
+Evenimentele A și B sunt independente dacă:
+
+\[
+P(A|B)=P(A)
+\]
+
+și echivalent:
+
+\[
+P(B|A)=P(B)
+\]
+
+Aceasta înseamnă că probabilitățile lor rămân neschimbate după observarea celuilalt eveniment.
+
+\subsection{Formula independenței}
+
+Pentru două evenimente independente:
+
+\[
+P(A \cap B)
+=
+P(A)\cdot P(B)
+\]
+
+Această relație este utilizată frecvent pentru verificarea independenței. Sau:
+
+\[
+P(A | B)
+=
+P(A)
+\]
+
+\subsection{Exemplu}
+
+Considerăm două aruncări succesive ale unei monede.
+
+Evenimente:
+
+\[
+A = \mbox{Prima aruncare este Cap}
+\]
+
+\[
+B = \mbox{A doua aruncare este Cap}
+\]
+
+Avem:
+
+\[
+P(A)=0.5
+\]
+
+\[
+P(B)=0.5
+\]
+
+și:
+
+\[
+P(A \cap B)
+=
+0.5 \cdot 0.5
+=
+0.25
+\]
+
+Evenimentele sunt independente deoarece rezultatul primei aruncări nu influențează rezultatul celei de-a doua.
+
+\subsection{Evenimente dependente}
+
+Nu toate evenimentele sunt independente.
+
+Exemplu:
+
+\[
+A = \mbox{Plouă}
+\]
+
+\[
+B = \mbox{Trafic mare}
+\]
+
+În general:
+
+\[
+P(B|A)
+\neq
+P(B)
+\]
+
+Deoarece ploaia influențează traficul, evenimentele sunt dependente.
+
+\subsection{Importanță}
+
+Independența permite simplificarea calculelor probabilistice și reducerea numărului de probabilități necesare într-un model.
+
+Această proprietate este utilizată extensiv în Rețelele Bayesiene.
+
+\subsection{Concluzie}
+
+Două evenimente sunt independente atunci când cunoașterea unuia dintre ele nu modifică probabilitatea celuilalt, iar probabilitatea comună poate fi calculată prin înmulțirea probabilităților individuale.
+
+
+\section{Independența condiționată}
+
+În multe situații, două evenimente care sunt dependente devin independente atunci când cunoaștem informații suplimentare despre un al treilea eveniment.
+
+Acest fenomen poartă numele de independență condiționată.
+
+\subsection{Definiție}
+
+Evenimentele A și B sunt independente condiționat de C dacă:
+
+\[
+P(A|B,C)
+=
+P(A|C)
+\]
+
+și echivalent:
+
+\[
+P(B|A,C)
+=
+P(B|C)
+\]
+
+Aceasta înseamnă că, după ce cunoaștem informația C, cunoașterea lui A nu mai oferă informații suplimentare despre B.
+
+\subsection{Exemplu}
+
+Considerăm variabilele:
+
+\[
+Ploaie
+\]
+
+\[
+Trafic
+\]
+
+\[
+Intarziere
+\]
+
+În general, ploaia și întârzierea sunt dependente.
+
+Dacă plouă, este mai probabil să apară întârzieri.
+
+Totuși, dacă știm deja că traficul este mare, informația despre ploaie devine mai puțin relevantă.
+
+Astfel putem considera că:
+
+\[
+Ploaie
+\perp
+Intarziere
+\mid
+Trafic
+\]
+
+adică ploaia și întârzierea sunt independente condiționat de trafic.
+
+\subsection{Diferența față de independență}
+
+Independență:
+
+\[
+P(A|B)
+=
+P(A)
+\]
+
+Independență condiționată:
+
+\[
+P(A|B,C)
+=
+P(A|C)
+\]
+
+În primul caz evenimentele sunt independente în mod absolut.
+
+În al doilea caz independența apare doar după observarea unei informații suplimentare.
+
+\subsection{Importanță}
+
+Independența condiționată permite simplificarea modelelor probabilistice și reducerea numărului de probabilități care trebuie memorate.
+
+Această proprietate reprezintă fundamentul Rețelelor Bayesiene.
+
+\subsection{Concluzie}
+
+Independența condiționată apare atunci când două evenimente devin independente după observarea unui al treilea eveniment și constituie unul dintre conceptele centrale ale raționamentului probabilistic.
+
+
+
+
+
+
+
+
+
+\section{Rețele Bayesiene}
+
+O Rețea Bayesiană este un model probabilistic grafic utilizat pentru reprezentarea relațiilor dintre variabile aleatoare.
+
+Aceasta permite descrierea dependențelor dintre variabile și efectuarea inferenței probabilistice într-un mod eficient.
+
+\subsection{Definiție}
+
+O Rețea Bayesiană este un graf orientat aciclic (DAG - Directed Acyclic Graph) în care:
+
+\begin{itemize}
+\item fiecare nod reprezintă o variabilă aleatoare;
+\item fiecare muchie reprezintă o relație de dependență;
+\item fiecărui nod îi este asociată o distribuție de probabilitate.
+\end{itemize}
+
+\subsection{Exemplu}
+
+Considerăm variabilele:
+
+\[
+Ploaie
+\]
+
+\[
+Trafic
+\]
+
+\[
+Intarziere
+\]
+
+Relațiile pot fi reprezentate astfel:
+
+\begin{verbatim}
+Ploaie --> Trafic --> Intarziere
+\end{verbatim}
+
+Interpretare:
+
+\begin{itemize}
+\item ploaia influențează traficul;
+\item traficul influențează întârzierea.
+\end{itemize}
+
+\subsection{Avantaje}
+
+Rețelele Bayesiene:
+
+\begin{itemize}
+\item reprezintă relații complexe între variabile;
+\item gestionează incertitudinea;
+\item permit inferență probabilistă;
+\item reduc numărul de probabilități care trebuie memorate (reducerea dimensiunii modelului).
+\end{itemize}
+
+\subsection{Concluzie}
+
+Rețelele Bayesiene reprezintă unul dintre cele mai importante modele probabilistice din Inteligența Artificială și permit raționamentul în condiții de incertitudine.
+
+\section{Componentele unei Rețele Bayesiene}
+
+O Rețea Bayesiană este alcătuită din mai multe componente fundamentale.
+
+\subsection{Noduri}
+
+Fiecare nod reprezintă o variabilă aleatoare.
+
+Exemple:
+
+\begin{itemize}
+\item Ploaie;
+\item Trafic;
+\item Întârziere;
+\item Boală;
+\item Test Pozitiv.
+\end{itemize}
+
+\subsection{Muchii}
+
+Muchiile orientate indică existența unei influențe directe între variabile.
+
+Exemplu:
+
+\begin{verbatim}
+Ploaie --> Trafic
+\end{verbatim}
+
+înseamnă că probabilitatea traficului depinde de starea variabilei Ploaie.
+
+\subsection{Părinți și copii}
+
+Pentru un nod:
+
+\begin{verbatim}
+A --> B
+\end{verbatim}
+
+A este părinte pentru B, deci A îl influențează pe B.
+
+\subsection{Tabele de probabilități condiționate}
+
+Fiecărui nod îi este asociat un tabel de probabilități condiționate (CPT - Conditional Probability Table).
+
+Exemplu:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Ploaie & P(Trafic=Mare) \\
+\hline
+Da & 0.8 \\
+Nu & 0.2 \\
+\hline
+\end{tabular}
+\end{center}
+
+Acest tabel descrie influența variabilei Ploaie asupra variabilei Trafic.
+
+\subsection{Graf orientat aciclic}
+
+Rețeaua trebuie să fie aciclică.
+
+Nu sunt permise cicluri de forma:
+
+\begin{verbatim}
+A --> B --> C --> A
+\end{verbatim}
+
+Acest lucru garantează existența unei ordini corecte de calcul.
+
+\subsection{Concluzie}
+
+O Rețea Bayesiană este formată din:
+
+\begin{itemize}
+\item noduri;
+\item muchii orientate;
+\item relații părinte-copil;
+\item tabele de probabilități condiționate.
+\end{itemize}
+
+Împreună, aceste componente permit reprezentarea și analiza relațiilor probabilistice dintre variabile.
+
+
+
+
+
+\end{document}

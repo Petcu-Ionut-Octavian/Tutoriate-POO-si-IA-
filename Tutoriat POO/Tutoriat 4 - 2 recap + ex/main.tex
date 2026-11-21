@@ -1,0 +1,385 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 4\\Recapitulare si Exercitii}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Recapitulare}
+
+În acest tutoriat au fost prezentate conceptele de Overloading, Overriding și Upcasting, împreună cu diferențele și aplicațiile lor în Programarea Orientată pe Obiecte.
+
+\subsection{Overloading}
+
+Overloading (supraîncărcarea):
+
+\begin{itemize}
+\item apare în aceeași clasă;
+\item funcțiile au același nume;
+\item funcțiile au parametri diferiți;
+\item nu necesită moștenire.
+\end{itemize}
+
+Exemplu:
+
+\begin{verbatim}
+void f();
+
+void f(int);
+
+void f(double);
+\end{verbatim}
+
+\subsection{Hiding}
+
+Hiding apare atunci când o clasă derivată declară o metodă cu același nume ca o metodă din clasa de bază.
+
+În această situație, metodele cu același nume din baza devin inaccesibile direct.
+
+\begin{verbatim}
+class B {
+public:
+    void f();
+};
+
+class D : public B {
+public:
+    void f(int);
+};
+\end{verbatim}
+
+\textbf{Observație:} La Hiding contează doar numele metodei. Chiar dacă parametrii diferă, metodele din clasa de bază sunt ascunse.
+
+\subsection{Overriding}
+
+Overriding (suprascrierea):
+
+\begin{itemize}
+\item apare la moștenire;
+\item metodele au același nume;
+\item metodele au aceiași parametri;
+\item metoda din derivată înlocuiește metoda din bază.
+\end{itemize}
+
+Exemplu:
+
+\begin{verbatim}
+class B {
+public:
+    void f();
+};
+
+class D : public B {
+public:
+    void f();
+};
+\end{verbatim}
+
+\subsection{Operatorul de rezoluție ::}
+
+Operatorul ::
+
+permite accesarea explicită a membrilor unei clase.
+
+Exemplu:
+
+\begin{verbatim}
+d.B::f();
+\end{verbatim}
+
+Acesta este utilizat pentru:
+
+\begin{itemize}
+\item accesarea metodelor ascunse;
+\item accesarea metodelor suprascrise;
+\item eliminarea ambiguităților.
+\end{itemize}
+
+\subsection{Upcasting}
+
+Upcasting reprezintă conversia unui pointer sau a unei referințe către o clasă derivată într-un pointer sau o referință către clasa de bază.
+
+Exemplu:
+
+\begin{verbatim}
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Caracteristici:
+
+\begin{itemize}
+\item conversie automată;
+\item conversie sigură;
+\item funcționează doar pentru pointeri și referințe.
+\end{itemize}
+
+\subsection{Limitările Upcasting-ului}
+
+După Upcasting, accesul este limitat la membrii clasei de bază.
+
+\begin{verbatim}
+Shape* p = &c;
+
+p->draw();      // OK
+p->setRadius(); // Eroare
+\end{verbatim}
+
+\textbf{Observație:} Obiectul își păstrează tipul real, însă metodele accesibile sunt determinate de tipul pointerului sau al referinței.
+
+\subsection{Idei de reținut}
+
+\begin{enumerate}
+\item Overloading = aceeași clasă + parametri diferiți.
+\item Overriding = moștenire + aceiași parametri.
+\item Hiding = moștenire + același nume, dar parametri diferiți.
+\item Tipul returnat nu participă la Overloading.
+\item Operatorul :: permite accesarea explicită a membrilor unei clase.
+\item Upcasting convertește Derivată → Bază.
+\item După Upcasting avem acces doar la membrii clasei de bază.
+\item Upcasting funcționează doar cu pointeri și referințe.
+\end{enumerate}
+
+
+\section{Exerciții}
+
+\subsection{Exercițiul 1 - Overloading}
+
+Care dintre următoarele declarații reprezintă exemple valide de supraîncărcare?
+
+\begin{verbatim}
+void f(int x);
+
+void f(double x);
+
+void f(int x, int y);
+\end{verbatim}
+
+Justificați răspunsul.
+
+\subsection{Exercițiul 2 - Tipul returnat}
+
+Analizați următorul cod:
+
+\begin{verbatim}
+int f(int x);
+
+double f(int x);
+\end{verbatim}
+
+Compilarea are succes?
+
+Motivați răspunsul.
+
+\subsection{Exercițiul 3 - Hiding}
+
+Determinați ce instrucțiuni sunt valide.
+
+\begin{verbatim}
+class B {
+public:
+    void f() {
+    }
+};
+
+class D : public B {
+public:
+    void f(int x) {
+    }
+};
+
+D d;
+\end{verbatim}
+
+Apeluri:
+
+\begin{verbatim}
+d.f();
+
+d.f(10);
+\end{verbatim}
+
+Precizați dacă apar erori de compilare.
+
+\subsection{Exercițiul 4 - Operatorul ::}
+
+Pornind de la exercițiul anterior, scrieți instrucțiunea necesară pentru apelarea metodei:
+
+\begin{verbatim}
+B::f()
+\end{verbatim}
+
+prin intermediul obiectului:
+
+\begin{verbatim}
+d
+\end{verbatim}
+
+\subsection{Exercițiul 5 - Overriding}
+
+Analizați următorul cod:
+
+\begin{verbatim}
+class B {
+public:
+    void f() {
+        std::cout << "B";
+    }
+};
+
+class D : public B {
+public:
+    void f() {
+        std::cout << "D";
+    }
+};
+\end{verbatim}
+
+Determinați afișarea pentru:
+
+\begin{verbatim}
+D d;
+
+d.f();
+\end{verbatim}
+
+\subsection{Exercițiul 6}
+
+Pentru fiecare situație indicați conceptul corespunzător:
+
+\begin{enumerate}
+\item Aceeași clasă, aceeași metodă, parametri diferiți.
+\item Clasă derivată, aceeași metodă, aceiași parametri.
+\item Clasă derivată, aceeași metodă, parametri diferiți.
+\end{enumerate}
+
+\subsection{Exercițiul 7}
+
+Considerăm:
+
+\begin{verbatim}
+class Shape {
+};
+
+class Circle : public Shape {
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Identificați:
+
+\begin{itemize}
+\item tipul obiectului;
+\item tipul pointerului;
+\item tipul conversiei realizate.
+\end{itemize}
+
+\subsection{Exercițiul 8 - Acces după Upcasting}
+
+Analizați codul:
+
+\begin{verbatim}
+class Shape {
+public:
+    void draw() {
+    }
+};
+
+class Circle : public Shape {
+public:
+    void setRadius() {
+    }
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Indicați care dintre următoarele apeluri sunt valide:
+
+\begin{verbatim}
+p->draw();
+
+p->setRadius();
+\end{verbatim}
+
+Motivați răspunsul.
+
+\subsection{Exercițiul 9 - Adevărat sau Fals}
+
+Indicați dacă afirmațiile sunt adevărate sau false.
+
+\begin{enumerate}
+\item Overloading necesită moștenire.
+\item Overriding necesită moștenire.
+\item Tipul returnat participă la Overloading.
+\item Upcasting este realizat automat.
+\item Upcasting funcționează doar cu pointeri și referințe.
+\item Hiding poate apărea chiar dacă parametrii diferă.
+\end{enumerate}
+
+\subsection{Exercițiul 10 - Recapitulare}
+
+Completați spațiile libere:
+
+\begin{enumerate}
+\item Overloading apare în aceeași ............ .
+\item Overriding apare la ............ .
+\item Hiding ascunde metodele din clasa ............ .
+\item Operatorul utilizat pentru acces explicit este ............ .
+\item Upcasting realizează conversia de la clasa ............ la clasa ............ .
+\item După Upcasting avem acces doar la membrii clasei ............ .
+\end{enumerate}
+
+
+\subsection{Exercițiul 6 - Răspunsuri}
+Răspunsurile trebuie să fie:
+
+\begin{itemize}
+\item Overloading;
+\item Overriding;
+\item Hiding.
+\end{itemize}
+
+\subsection{Răspunsuri Exercițiul 9}
+
+\begin{enumerate}
+\item Fals
+\item Adevărat
+\item Fals
+\item Adevărat
+\item Adevărat
+\item Adevărat
+\end{enumerate}
+
+\subsection{Răspunsuri Exercițiul 10}
+
+\begin{enumerate}
+\item Overloading apare în aceeași \textbf{clasă}.
+\item Overriding apare la \textbf{moștenire}.
+\item Hiding ascunde metodele din clasa \textbf{de bază}.
+\item Operatorul utilizat pentru acces explicit este \textbf{::}.
+\item Upcasting realizează conversia de la clasa \textbf{derivată} la clasa \textbf{de bază}.
+\item După Upcasting avem acces doar la membrii clasei \textbf{de bază}.
+\end{enumerate}
+
+
+
+\end{document}

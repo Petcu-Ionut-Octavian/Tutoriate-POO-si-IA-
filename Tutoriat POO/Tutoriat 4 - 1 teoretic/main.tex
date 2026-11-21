@@ -1,0 +1,1488 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 4\\Overload, Override, Upcasting}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+
+
+
+\section{Introducere}
+
+În Programarea Orientată pe Obiecte există mai multe mecanisme care permit reutilizarea și extinderea comportamentului claselor.
+
+În acest tutoriat vom studia trei concepte importante:
+
+\begin{itemize}
+\item Overloading (supraîncărcare);
+\item Overriding (suprascriere);
+\item Upcasting.
+\end{itemize}
+
+Aceste concepte sunt strâns legate de noțiunile de funcții, clase și moștenire și apar frecvent în aplicațiile dezvoltate folosind C++. 4. Overload, Override, Upcasting.pdf
+
+\subsection{Motivație}
+
+În practică este des întâlnită situația în care:
+
+\begin{itemize}
+\item dorim să utilizăm aceeași funcție pentru tipuri diferite de date;
+\item dorim să redefinim comportamentul moștenit de la o clasă de bază;
+\item dorim să tratăm obiecte din clase derivate ca obiecte ale clasei de bază.
+\end{itemize}
+
+Pentru rezolvarea acestor situații folosim mecanismele studiate în acest capitol.
+
+\subsection{Concepte importante}
+
+\textbf{Overloading} permite existența mai multor funcții cu același nume, dar cu parametri diferiți.
+
+\textbf{Overriding} permite unei clase derivate să înlocuiască implementarea unei metode moștenite.
+
+\textbf{Upcasting} permite convertirea unui pointer sau a unei referințe către o clasă derivată într-un pointer sau o referință către clasa de bază.
+
+\subsection{Obiective}
+
+La finalul acestui tutoriat vom putea:
+
+\begin{itemize}
+\item identifica diferențele dintre Overloading și Overriding;
+\item înțelege fenomenul de Hiding;
+\item utiliza operatorul de rezoluție ::;
+\item explica mecanismul de Upcasting;
+\item identifica limitările unui pointer după Upcasting.
+\end{itemize}
+
+Aceste noțiuni reprezintă baza pentru înțelegerea polimorfismului și a cuvântului cheie \\texttt{virtual}, care vor fi studiate ulterior. 
+
+
+
+
+
+
+
+
+\section{Overloading (Supraîncărcare)}
+
+Overloading (supraîncărcarea) reprezintă posibilitatea declarării mai multor funcții cu același nume, atâta timp cât acestea au liste de parametri diferite.
+
+Supraîncărcarea permite reutilizarea aceluiași nume pentru operații asemănătoare aplicate unor tipuri diferite de date.
+
+\subsection{Motivație}
+
+În multe situații dorim să executăm aceeași operație asupra unor tipuri diferite de date.
+
+De exemplu, putem avea o funcție care afișează informații despre:
+
+\begin{itemize}
+\item un număr întreg;
+\item un număr real;
+\item un șir de caractere.
+\end{itemize}
+
+În loc să folosim nume diferite pentru fiecare funcție, putem utiliza supraîncărcarea.
+
+\subsection{Exemplu simplu}
+
+\begin{verbatim}
+class Afisare {
+public:
+
+    void print(int x) {
+        std::cout << x << '\n';
+    }
+
+    void print(double x) {
+        std::cout << x << '\n';
+    }
+
+    void print(char c) {
+        std::cout << c << '\n';
+    }
+};
+\end{verbatim}
+
+Toate metodele au același nume, dar parametri diferiți.
+
+Compilatorul va alege automat funcția corespunzătoare în funcție de argumentele folosite la apel.
+
+\subsection{Cum funcționează?}
+
+Exemplu:
+
+\begin{verbatim}
+Afisare a;
+
+a.print(10);
+a.print(3.14);
+a.print('A');
+\end{verbatim}
+
+Compilatorul determină ce variantă trebuie apelată analizând lista parametrilor.
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item cod mai ușor de citit;
+\item interfețe uniforme;
+\item reutilizarea aceluiași nume pentru operații similare;
+\item organizare mai bună a codului.
+\end{itemize}
+
+\subsection{Observație}
+
+Pentru ca două funcții să fie considerate supraîncărcate, trebuie să difere prin lista parametrilor.
+
+Diferențele pot apărea prin:
+
+\begin{itemize}
+\item numărul parametrilor;
+\item tipul parametrilor;
+\item ordinea parametrilor.
+\end{itemize}
+
+\subsection{Exercițiu}
+Cum ați modifica acest cod, având în vedere posibilele avertismente (warnings) care ar putea apărea?
+
+
+
+
+
+
+
+
+\section{Reguli pentru supraîncărcare}
+
+Pentru ca două sau mai multe funcții să poată fi supraîncărcate, acestea trebuie să aibă același nume și liste de parametri diferite.
+
+Compilatorul identifică funcția care trebuie apelată analizând argumentele folosite la apel.
+
+\subsection{Număr diferit de parametri}
+
+Două funcții pot fi supraîncărcate dacă au un număr diferit de parametri.
+
+Exemplu:
+
+\begin{verbatim}
+void f(int x);
+
+void f(int x, int y);
+\end{verbatim}
+
+Aceste funcții sunt corect supraîncărcate.
+
+\subsection{Tipuri diferite de parametri}
+
+Două funcții pot fi supraîncărcate dacă tipurile parametrilor diferă.
+
+Exemplu:
+
+\begin{verbatim}
+void f(int x);
+
+void f(double x);
+\end{verbatim}
+
+Și aceste funcții sunt corect supraîncărcate.
+
+\subsection{Ordine diferită a parametrilor}
+
+Ordinea parametrilor poate contribui la supraîncărcare.
+
+Exemplu:
+
+\begin{verbatim}
+void f(int x, double y);
+
+void f(double x, int y);
+\end{verbatim}
+
+Funcțiile sunt diferite deoarece listele parametrilor sunt diferite.
+
+\subsection{Tipul returnat NU contează}
+
+Tipul returnat nu participă la procesul de supraîncărcare.
+
+Exemplu:
+
+\begin{verbatim}
+int f(int x);
+
+double f(int x);
+\end{verbatim}
+
+Acest cod produce eroare de compilare.
+
+Cele două funcții au aceeași listă de parametri, iar tipul returnat nu este luat în considerare.
+
+\subsection{Exemple valide}
+
+\begin{verbatim}
+void print(int x);
+
+void print(double x);
+
+void print(int x, int y);
+
+void print(char c);
+\end{verbatim}
+
+Toate exemplele de mai sus reprezintă funcții supraîncărcate.
+
+\subsection{Exemple invalide}
+
+\begin{verbatim}
+int f(int x);
+
+double f(int x);
+\end{verbatim}
+
+și
+
+\begin{verbatim}
+void f(int x);
+
+void f(int x);
+\end{verbatim}
+
+nu reprezintă supraîncărcare și vor genera eroare de compilare.
+
+\subsection{De reținut}
+
+\begin{itemize}
+\item funcțiile trebuie să aibă același nume;
+\item numărul parametrilor poate fi diferit;
+\item tipurile parametrilor pot fi diferite;
+\item ordinea parametrilor poate fi diferită;
+\item tipul returnat nu influențează supraîncărcarea.
+\end{itemize}
+
+
+
+
+
+
+
+\newpage
+
+\section{Exemple de supraîncărcare}
+
+În această secțiune vom analiza câteva exemple de supraîncărcare pentru a înțelege mai bine modul în care compilatorul selectează funcția potrivită.
+
+\subsection{Supraîncărcare după tipul parametrilor}
+
+\begin{verbatim}
+class Calculator {
+public:
+
+    void afiseaza(int x) {
+        std::cout << "int: "
+                  << x << '\n';
+    }
+
+    void afiseaza(double x) {
+        std::cout << "double: "
+                  << x << '\n';
+    }
+};
+\end{verbatim}
+
+Utilizare:
+
+\begin{verbatim}
+Calculator c;
+
+c.afiseaza(10);
+c.afiseaza(3.14);
+\end{verbatim}
+
+Compilatorul va alege automat metoda corespunzătoare tipului argumentului.
+
+\subsection{Supraîncărcare după numărul parametrilor}
+
+\begin{verbatim}
+class Calculator {
+public:
+
+    int suma(int a, int b) {
+        return a + b;
+    }
+
+    int suma(int a,
+             int b,
+             int c) {
+        return a + b + c;
+    }
+};
+\end{verbatim}
+
+Utilizare:
+
+\begin{verbatim}
+Calculator c;
+
+c.suma(2, 3);
+c.suma(2, 3, 4);
+\end{verbatim}
+
+Supraîncărcarea este realizată prin modificarea numărului parametrilor.
+
+\subsection{Supraîncărcare după ordinea parametrilor}
+
+\begin{verbatim}
+class Exemplu {
+public:
+
+    void f(int x, double y) {
+    }
+
+    void f(double x, int y) {
+    }
+};
+\end{verbatim}
+
+Cele două metode sunt diferite deoarece lista parametrilor este diferită.
+
+\subsection{Supraîncărcarea funcțiilor obișnuite}
+
+Supraîncărcarea nu este limitată la metodele claselor.
+
+\begin{verbatim}
+void print(int x) {
+    std::cout << x << '\n';
+}
+
+void print(double x) {
+    std::cout << x << '\n';
+}
+
+void print(char c) {
+    std::cout << c << '\n';
+}
+\end{verbatim}
+
+Toate funcțiile au același nume, dar parametri diferiți.
+
+\subsection{Exemplu invalid}
+
+\begin{verbatim}
+int f(int x);
+
+double f(int x);
+\end{verbatim}
+
+Acest cod nu reprezintă supraîncărcare și va genera eroare de compilare.
+
+Tipul returnat nu este luat în considerare la supraîncărcare.
+
+\subsection{Concluzie}
+
+Pentru ca două funcții să fie supraîncărcate trebuie să aibă:
+
+\begin{itemize}
+\item același nume;
+\item liste de parametri diferite.
+\end{itemize}
+
+Diferența poate consta în numărul, tipul sau ordinea parametrilor, dar nu în tipul returnat.
+
+
+
+\section{Ascunderea metodelor (Hiding)}
+
+Ascunderea metodelor (Hiding) apare atunci când o clasă derivată declară o metodă cu același nume ca o metodă din clasa de bază.
+
+În această situație, metoda din clasa de bază nu mai este accesibilă direct prin intermediul obiectelor clasei derivate.
+
+\subsection{Exemplu}
+
+\begin{verbatim}
+class B {
+public:
+
+    void f() {
+        std::cout << "B::f()\n";
+    }
+};
+
+class D : public B {
+public:
+
+    void f(int x) {
+        std::cout << x << '\n';
+    }
+};
+\end{verbatim}
+
+La prima vedere am putea crede că metoda din clasa derivată reprezintă o supraîncărcare a metodei din baza.
+
+În realitate, metoda din clasa de bază este ascunsă.
+
+\subsection{Problema}
+
+\begin{verbatim}
+D d;
+
+d.f();
+\end{verbatim}
+
+Codul de mai sus produce eroare de compilare.
+
+Deși metoda:
+
+\begin{verbatim}
+void f()
+\end{verbatim}
+
+există în clasa B, aceasta nu mai este accesibilă direct prin obiectul de tip D.
+
+Compilatorul găsește doar metodele cu numele f din clasa derivată.
+
+\subsection{De ce apare Hiding?}
+
+Atunci când o clasă derivată declară o metodă cu un anumit nume, toate metodele cu același nume din clasele de bază sunt ascunse.
+
+Acest lucru este valabil chiar dacă listele de parametri sunt diferite.
+
+\subsection{Observație Importantă}
+Hiding nu este același lucru cu Overloading.
+În cazul Overloading-ului, funcțiile fac parte din aceeași clasă.
+În cazul Hiding-ului, metodele se află în clase diferite și intervine mecanismul moștenirii.
+\subsection{Exemplu de apel valid}
+
+\begin{verbatim}
+D d;
+
+d.f(10);
+\end{verbatim}
+
+Aici este apelată metoda din clasa derivată deoarece aceasta este singura metodă vizibilă direct prin obiectul d.
+
+\subsection{Concluzie}
+
+Declararea unei metode cu același nume într-o clasă derivată poate ascunde metodele cu același nume din clasa de bază.
+
+Acest fenomen poartă numele de Hiding și reprezintă o sursă frecventă de erori pentru programatorii aflați la început.
+
+
+
+
+
+
+
+
+\section{Rezolvarea ascunderii metodelor}
+
+Problema ascunderii metodelor poate fi rezolvată prin utilizarea operatorului de rezoluție a domeniului.
+
+Acesta permite accesarea explicită a unei metode din clasa de bază.
+
+\subsection{Exemplu}
+
+Considerăm următoarea ierarhie:
+
+\begin{verbatim}
+class B {
+public:
+
+    void f() {
+        std::cout << "B::f()\n";
+    }
+};
+
+class D : public B {
+public:
+
+    void f(int x) {
+        std::cout << x << '\n';
+    }
+};
+\end{verbatim}
+
+Metoda:
+
+\begin{verbatim}
+f()
+\end{verbatim}
+
+din clasa B este ascunsă de metoda:
+
+\begin{verbatim}
+f(int)
+\end{verbatim}
+
+din clasa D.
+
+\subsection{Utilizarea operatorului ::}
+
+Pentru a apela metoda din clasa de bază folosim:
+
+\begin{verbatim}
+D d;
+
+d.B::f();
+\end{verbatim}
+
+Operatorul ::
+
+specifică explicit faptul că dorim apelarea metodei din clasa B.
+
+\subsection{Rezultat}
+
+În exemplul anterior:
+
+\begin{verbatim}
+d.B::f();
+d.f(10);
+\end{verbatim}
+
+ambele metode pot fi utilizate fără probleme.
+
+Prima instrucțiune apelează metoda din baza B.
+
+A doua instrucțiune apelează metoda din derivata D.
+
+\subsection{Avantaj}
+
+Operatorul de rezoluție permite accesul simultan atât la metodele clasei derivate, cât și la metodele clasei de bază care au fost ascunse.
+
+\subsection{Concluzie}
+
+Atunci când o metodă din clasa derivată ascunde o metodă cu același nume din clasa de bază, aceasta poate fi accesată folosind operatorul de rezoluție:
+
+\begin{verbatim}
+obiect.ClasaBaza::metoda(...)
+\end{verbatim}
+
+Aceasta este soluția standard pentru rezolvarea fenomenului de Hiding.
+
+\textbf{Observație:} În cazul Hiding, este suficient ca metodele să aibă același nume. Chiar dacă parametrii sunt diferiți, metoda din clasa derivată ascunde toate metodele cu același nume din clasa de bază.
+
+
+
+
+
+
+\section{Overriding (Suprascriere)}
+
+Overriding (suprascrierea) reprezintă procesul prin care o clasă derivată redefinește o metodă moștenită din clasa de bază.
+
+Spre deosebire de Overloading, suprascrierea apare exclusiv în contextul moștenirii.
+
+\subsection{Definiție}
+
+O metodă este suprascrisă dacă:
+
+\begin{itemize}
+\item are același nume;
+\item are aceeași listă de parametri;
+\item este declarată într-o clasă derivată.
+\end{itemize}
+
+În această situație, implementarea din clasa derivată înlocuiește implementarea din clasa de bază.
+
+\subsection{Exemplu}
+
+\begin{verbatim}
+class B {
+public:
+
+    void f() {
+        std::cout << "B::f()\n";
+    }
+};
+
+class D : public B {
+public:
+
+    void f() {
+        std::cout << "D::f()\n";
+    }
+};
+\end{verbatim}
+
+Metoda din clasa D suprascrie metoda din clasa B.
+
+\subsection{Apelul metodei suprascrise}
+
+\begin{verbatim}
+D d;
+
+d.f();
+\end{verbatim}
+
+Rezultat:
+
+\begin{verbatim}
+D::f()
+\end{verbatim}
+
+Implementarea din clasa derivată este cea utilizată.
+
+\subsection{Accesarea metodei din clasa de bază}
+
+Metoda suprascrisă poate fi apelată folosind operatorul de rezoluție.
+
+\begin{verbatim}
+D d;
+
+d.B::f();
+\end{verbatim}
+
+Rezultat:
+
+\begin{verbatim}
+B::f()
+\end{verbatim}
+
+\subsection{Overriding vs Hiding}
+
+La Hiding:
+
+\begin{verbatim}
+void f();
+void f(int);
+\end{verbatim}
+
+parametrii sunt diferiți.
+
+La Overriding:
+
+\begin{verbatim}
+void f();
+void f();
+\end{verbatim}
+
+atât numele cât și parametrii sunt identici.
+
+\subsection{Observație}
+
+În suprascriere, metoda din clasa derivată înlocuiește complet comportamentul metodei moștenite. Pentru a accesa implementarea din clasa de bază este necesară utilizarea operatorului de rezoluție ::.
+
+\subsection{Concluzie}
+
+Overriding permite claselor derivate să ofere propriile implementări pentru metodele moștenite, adaptând comportamentul clasei de bază la cerințele aplicației.
+
+
+
+
+\section{Diferențe între Overloading și Overriding}
+
+Deși cele două concepte sunt asemănătoare ca denumire, ele reprezintă mecanisme diferite.
+
+\subsection{Overloading}
+
+Overloading (supraîncărcarea):
+
+\begin{itemize}
+\item apare în aceeași clasă;
+\item funcțiile au același nume;
+\item funcțiile au parametri diferiți;
+\item nu necesită moștenire.
+\end{itemize}
+
+Exemplu:
+
+\begin{verbatim}
+class A {
+public:
+
+    void f() {
+    }
+
+    void f(int x) {
+    }
+};
+\end{verbatim}
+
+\subsection{Overriding}
+
+Overriding (suprascrierea):
+
+\begin{itemize}
+\item apare la moștenire;
+\item funcțiile au același nume;
+\item funcțiile au aceiași parametri;
+\item metoda din derivată înlocuiește metoda din bază.
+\end{itemize}
+
+Exemplu:
+
+\begin{verbatim}
+class B {
+public:
+
+    void f() {
+    }
+};
+
+class D : public B {
+public:
+
+    void f() {
+    }
+};
+\end{verbatim}
+
+\subsection{Comparație}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+Caracteristică & Overloading & Overriding \\
+\hline
+Necesită moștenire & Nu & Da \\
+\hline
+Același nume & Da & Da \\
+\hline
+Aceiași parametri & Nu & Da \\
+\hline
+Parametri diferiți & Da & Nu \\
+\hline
+Clase diferite & Nu & Da \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Observație}
+
+O metodă cu același nume și parametri diferiți declarată într-o clasă derivată nu reprezintă Overriding.
+
+În această situație apare fenomenul de Hiding.
+
+\subsection{De reținut}
+
+\begin{itemize}
+\item Overloading = aceeași clasă + parametri diferiți.
+\item Overriding = moștenire + aceiași parametri.
+\item Hiding = moștenire + același nume, dar parametri diferiți.
+\end{itemize}
+
+
+
+
+\section{Exemple de Overriding}
+
+În această secțiune vom analiza câteva exemple de suprascriere pentru a observa cum o metodă din clasa derivată înlocuiește comportamentul metodei moștenite.
+
+\subsection{Exemplul 1}
+
+\begin{verbatim}
+class Animal {
+public:
+
+    void sunet() {
+        std::cout << "Sunet generic\n";
+    }
+};
+
+class Dog : public Animal {
+public:
+
+    void sunet() {
+        std::cout << "Ham Ham\n";
+    }
+};
+\end{verbatim}
+
+Utilizare:
+
+\begin{verbatim}
+Dog d;
+
+d.sunet();
+\end{verbatim}
+
+Rezultat:
+
+\begin{verbatim}
+Ham Ham
+\end{verbatim}
+
+Metoda din clasa Dog suprascrie metoda moștenită din Animal.
+
+\subsection{Exemplul 2}
+
+\begin{verbatim}
+class Persoana {
+public:
+
+    void prezentare() {
+        std::cout << "Persoana\n";
+    }
+};
+
+class Student : public Persoana {
+public:
+
+    void prezentare() {
+        std::cout << "Student\n";
+    }
+};
+\end{verbatim}
+
+Utilizare:
+
+\begin{verbatim}
+Student s;
+
+s.prezentare();
+\end{verbatim}
+
+Rezultat:
+
+\begin{verbatim}
+Student
+\end{verbatim}
+
+Implementarea din clasa derivată este cea executată.
+
+\subsection{Apelarea metodei din baza}
+
+Chiar dacă metoda este suprascrisă, implementarea din baza poate fi accesată folosind operatorul de rezoluție.
+
+\begin{verbatim}
+Student s;
+
+s.Persoana::prezentare();
+\end{verbatim}
+
+Rezultat:
+
+\begin{verbatim}
+Persoana
+\end{verbatim}
+
+\subsection{Exemplu complet}
+
+\begin{verbatim}
+class B {
+public:
+
+    void f() {
+        std::cout << "B::f()\n";
+    }
+};
+
+class D : public B {
+public:
+
+    void f() {
+        std::cout << "D::f()\n";
+    }
+};
+\end{verbatim}
+
+Utilizare:
+
+\begin{verbatim}
+D d;
+
+d.f();
+
+d.B::f();
+\end{verbatim}
+
+Rezultat:
+
+\begin{verbatim}
+D::f()
+B::f()
+\end{verbatim}
+
+\subsection{Observație}
+
+Pentru a exista Overriding, metodele trebuie să aibă:
+
+\begin{itemize}
+\item același nume;
+\item aceiași parametri;
+\item relație de moștenire între clase.
+\end{itemize}
+
+Dacă parametrii diferă, nu mai vorbim despre Overriding, ci despre Hiding.
+
+
+
+
+
+
+\section{Operatorul de rezoluție ::}
+
+Operatorul de rezoluție :: este utilizat pentru accesarea explicită a membrilor care aparțin unei anumite clase sau unui anumit spațiu de nume.
+
+În contextul moștenirii, acesta este folosit frecvent pentru accesarea metodelor din clasa de bază.
+
+\subsection{Sintaxă}
+
+Forma generală este:
+
+\begin{verbatim}
+obiect.Clasa::metoda(...)
+\end{verbatim}
+
+sau
+
+\begin{verbatim}
+Clasa::metoda(...)
+\end{verbatim}
+
+\subsection{Accesarea unei metode ascunse}
+
+Considerăm următorul exemplu:
+
+\begin{verbatim}
+class B {
+public:
+
+    void f() {
+        std::cout << "B::f()\n";
+    }
+};
+
+class D : public B {
+public:
+
+    void f(int x) {
+        std::cout << x << '\n';
+    }
+};
+\end{verbatim}
+
+Metoda din baza B este ascunsă.
+
+Pentru a o apela folosim:
+
+\begin{verbatim}
+D d;
+
+d.B::f();
+\end{verbatim}
+
+\subsection{Accesarea unei metode suprascrise}
+
+Operatorul poate fi utilizat și atunci când o metodă a fost suprascrisă.
+
+\begin{verbatim}
+class B {
+public:
+
+    void f() {
+        std::cout << "B::f()\n";
+    }
+};
+
+class D : public B {
+public:
+
+    void f() {
+        std::cout << "D::f()\n";
+    }
+};
+\end{verbatim}
+
+Utilizare:
+
+\begin{verbatim}
+D d;
+
+d.f();
+
+d.B::f();
+\end{verbatim}
+
+Rezultat:
+
+\begin{verbatim}
+D::f()
+B::f()
+\end{verbatim}
+
+\subsection{Avantaje}
+
+\begin{itemize}
+\item permite accesarea metodelor ascunse;
+\item permite accesarea metodelor suprascrise;
+\item elimină ambiguitățile dintre membri cu același nume.
+\end{itemize}
+
+\subsection{De reținut}
+
+Operatorul :: este utilizat atunci când dorim să specificăm explicit clasa din care trebuie apelată o metodă sau un atribut.
+
+
+
+
+\section{Upcasting și Downcasting}
+
+În Programarea Orientată pe Obiecte, Upcasting și Downcasting reprezintă conversii între pointeri sau referințe asociate unei clase de bază și unei clase derivate.
+
+Aceste conversii sunt posibile datorită relației de moștenire dintre clase.
+
+\subsection{Upcasting}
+
+Upcasting reprezintă conversia unui pointer sau a unei referințe către o clasă derivată într-un pointer sau o referință către clasa de bază.
+
+Exemplu:
+
+\begin{verbatim}
+class Shape {
+};
+
+class Circle : public Shape {
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+În acest caz, pointerul către obiectul Circle este convertit către un pointer de tip Shape.
+
+Această conversie este realizată automat de compilator.
+
+\subsection{Downcasting}
+
+Downcasting reprezintă conversia unui pointer sau a unei referințe către clasa de bază într-un pointer sau o referință către clasa derivată.
+
+Exemplu:
+
+\begin{verbatim}
+Shape* p = new Circle();
+
+Circle* c = static_cast<Circle*>(p);
+\end{verbatim}
+
+Această conversie nu este realizată automat și trebuie efectuată explicit.
+
+\subsection{Diferențe}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+Caracteristică & Upcasting & Downcasting \\
+\hline
+Sensul conversiei & Derivată→Bază & Bază→Derivată \\
+\hline
+Automată & Da & Nu \\
+\hline
+Necesită cast explicit & Nu & Da \\
+\hline
+Nivel de siguranță & Ridicat & Mai redus \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Observație:} Upcasting este o conversie sigură deoarece orice obiect al unei clase derivate este și un obiect al clasei de bază. Downcasting este mai puțin sigur deoarece nu orice obiect al clasei de bază aparține unei clase derivate.
+
+
+\subsection{Observație}
+
+Upcasting și Downcasting funcționează doar pentru pointeri și referințe.
+
+Nu discutăm despre conversii între obiecte obișnuite, ci despre conversii între adrese care referă obiecte aflate într-o relație de moștenire.
+
+\subsection{Concluzie}
+
+Upcasting permite tratarea unui obiect derivat ca obiect al clasei de bază, în timp ce Downcasting realizează operația inversă.
+
+În practică, Upcasting este utilizat mult mai frecvent și este considerat conversia sigură.
+
+
+
+
+\section{Upcasting}
+
+Upcasting reprezintă conversia unui pointer sau a unei referințe către o clasă derivată într-un pointer sau o referință către clasa de bază.
+
+Este una dintre cele mai utilizate conversii din Programarea Orientată pe Obiecte și este realizată automat de compilator.
+
+\subsection{Exemplu}
+
+\begin{verbatim}
+class Shape {
+};
+
+class Circle : public Shape {
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+În exemplul de mai sus, pointerul:
+
+\begin{verbatim}
+Circle*
+\end{verbatim}
+
+este convertit automat într-un pointer:
+
+\begin{verbatim}
+Shape*
+\end{verbatim}
+
+Acest lucru este posibil deoarece orice obiect de tip Circle este și un obiect de tip Shape.
+
+\subsection{Upcasting folosind referințe}
+
+Conversia poate fi realizată și pentru referințe.
+
+\begin{verbatim}
+Circle c;
+
+Shape& ref = c;
+\end{verbatim}
+
+Referința către clasa derivată este convertită într-o referință către clasa de bază.
+
+\subsection{De ce folosim Upcasting?}
+
+Upcasting permite tratarea mai multor clase derivate prin intermediul unui singur tip de bază.
+
+Exemplu:
+
+\begin{verbatim}
+Shape* forme[3];
+
+forme[0] = new Circle();
+forme[1] = new Circle();
+forme[2] = new Circle();
+\end{verbatim}
+
+Astfel putem lucra cu obiecte diferite folosind pointeri de tip Shape.
+
+\subsection{Observație}
+
+Upcasting funcționează doar cu pointeri și referințe.
+
+\subsection{Observație Importantă}
+
+Upcasting este o conversie sigură deoarece orice obiect al unei clase derivate este și un obiect al clasei de bază.
+
+\subsection{Concluzie}
+
+Upcasting permite reprezentarea obiectelor derivate prin pointeri sau referințe către clasa de bază și stă la baza multor mecanisme OOP, inclusiv a polimorfismului.
+
+\section{Reguli și limitări ale Upcasting-ului}
+
+Deși Upcasting este o conversie sigură și foarte utilizată, există câteva reguli importante care trebuie respectate.
+
+\subsection{Funcționează doar pentru moștenire}
+
+Upcasting este posibil doar între clase aflate într-o relație de moștenire.
+
+\begin{verbatim}
+class Shape {
+};
+
+class Circle : public Shape {
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Conversia este validă deoarece Circle moștenește Shape.
+
+\subsection{Funcționează doar cu pointeri și referințe}
+
+Upcasting este utilizat pentru:
+
+\begin{itemize}
+\item pointeri;
+\item referințe.
+\end{itemize}
+
+Exemple:
+
+\begin{verbatim}
+Shape* p = &c;
+
+Shape& r = c;
+\end{verbatim}
+
+\subsection{Acces limitat la membrii bazei}
+
+După Upcasting, accesul este limitat la membrii definiți în clasa de bază.
+
+\begin{verbatim}
+class Shape {
+public:
+    void draw() {
+    }
+};
+
+class Circle : public Shape {
+public:
+    void radius() {
+    }
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Permis:
+
+\begin{verbatim}
+p->draw();
+\end{verbatim}
+
+Nepermis:
+
+\begin{verbatim}
+p->radius();
+\end{verbatim}
+
+deoarece pointerul este de tip Shape*.
+
+\subsection{Tipul obiectului nu se schimbă}
+
+Upcasting modifică doar tipul pointerului sau al referinței.
+
+Obiectul rămâne în continuare de tipul clasei derivate.
+
+\begin{verbatim}
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Obiectul este în continuare un Circle, chiar dacă este accesat printr-un pointer Shape*.
+
+\subsection{Observație}
+
+La Upcasting, pointerul are acces doar la datele și metodele definite în clasa de bază, indiferent de tipul real al obiectului.
+
+\subsection{Concluzie}
+
+Upcasting este o conversie automată și sigură, însă după conversie pot fi utilizați doar membrii vizibili prin intermediul clasei de bază.
+
+
+
+\section{Exemple de Upcasting}
+
+În această secțiune vom analiza câteva exemple concrete pentru a înțelege modul în care funcționează Upcasting-ul.
+
+\subsection{Exemplul 1 - Pointer}
+
+\begin{verbatim}
+class Shape {
+};
+
+class Circle : public Shape {
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Conversia este realizată automat deoarece Circle moștenește Shape.
+
+Acesta este cel mai simplu exemplu de Upcasting.
+
+\subsection{Exemplul 2 - Referință}
+
+\begin{verbatim}
+class Shape {
+};
+
+class Circle : public Shape {
+};
+
+Circle c;
+
+Shape& ref = c;
+\end{verbatim}
+
+Și în acest caz conversia este automată.
+
+Referința către obiectul derivat devine o referință către clasa de bază.
+
+\subsection{Exemplul 3 - Tablou de pointeri}
+
+Unul dintre cele mai importante cazuri de utilizare este stocarea obiectelor derivate într-un tablou de pointeri către clasa de bază.
+
+\begin{verbatim}
+class Shape {
+};
+
+class Circle : public Shape {
+};
+
+class Square : public Shape {
+};
+
+Shape* shapes[2];
+
+shapes[0] = new Circle();
+shapes[1] = new Square();
+\end{verbatim}
+
+Toate obiectele sunt tratate prin intermediul tipului Shape*.
+
+\subsection{Exemplul 4 - Acces limitat}
+
+\begin{verbatim}
+class Shape {
+public:
+
+    void draw() {
+    }
+};
+
+class Circle : public Shape {
+public:
+
+    void setRadius() {
+    }
+};
+
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Apel valid:
+
+\begin{verbatim}
+p->draw();
+\end{verbatim}
+
+Apel invalid:
+
+\begin{verbatim}
+p->setRadius();
+\end{verbatim}
+
+Pointerul este de tip Shape*, deci poate accesa doar membrii definiți în Shape.
+
+\subsection{Observație}
+
+La Upcasting, tipul obiectului nu se modifică.
+
+În exemplul:
+
+\begin{verbatim}
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+obiectul rămâne un Circle, însă este accesat prin intermediul unui pointer de tip Shape*.
+
+\subsection{Concluzie}
+
+Upcasting este utilizat frecvent pentru a trata obiecte derivate prin intermediul clasei de bază și reprezintă fundamentul mecanismelor de polimorfism din C++.
+
+\section{Accesul la metode după Upcasting}
+
+După realizarea unui Upcasting, obiectul rămâne de tipul clasei derivate, însă accesul la metode este determinat de tipul pointerului sau al referinței.
+
+\subsection{Exemplu}
+
+\begin{verbatim}
+class Shape {
+public:
+
+    void draw() {
+        std::cout << "Shape\n";
+    }
+};
+
+class Circle : public Shape {
+public:
+
+    void setRadius() {
+        std::cout << "Radius\n";
+    }
+};
+\end{verbatim}
+
+Realizăm Upcasting:
+
+\begin{verbatim}
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+\subsection{Metode accesibile}
+
+Pointerul este de tip Shape*.
+
+Prin urmare, putem apela doar metodele declarate în Shape.
+
+\begin{verbatim}
+p->draw();
+\end{verbatim}
+
+Acest apel este valid.
+
+\subsection{Metode inaccesibile}
+
+\begin{verbatim}
+p->setRadius();
+\end{verbatim}
+
+Acest apel produce eroare de compilare.
+
+Metoda setRadius există în obiectul Circle, însă nu există în tipul Shape.
+
+\subsection{Observație}
+
+După Upcasting, accesul este determinat de tipul pointerului sau al referinței, nu de tipul real al obiectului.
+
+\subsection{Exemplu}
+
+\begin{verbatim}
+Circle c;
+
+Shape* p = &c;
+\end{verbatim}
+
+Obiectul este un Circle, dar:
+
+\begin{verbatim}
+p
+\end{verbatim}
+
+este de tip Shape*.
+
+Din acest motiv, compilatorul permite accesul doar la membrii definiți în clasa Shape.
+
+\subsection{Concluzie}
+
+La Upcasting, obiectul își păstrează tipul real, însă pointerul sau referința poate accesa doar metodele și datele vizibile prin intermediul clasei de bază.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

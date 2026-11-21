@@ -1,0 +1,271 @@
+#include <iostream>
+
+/*========================================================
+  EXEMPLUL 1 - PROBLEMA DIAMANTULUI
+========================================================*/
+
+class A {
+public:
+    int x = 10;
+};
+
+class B : public A {
+};
+
+class C : public A {
+};
+
+class D : public B, public C {
+};
+
+void ex1_diamond_problem() {
+
+    D d;
+
+    // d.x = 100; // EROARE
+
+    d.B::x = 10;
+    d.C::x = 20;
+
+    std::cout << "B::x = "
+              << d.B::x
+              << '\n';
+
+    std::cout << "C::x = "
+              << d.C::x
+              << '\n';
+}
+
+// ex1_diamond_problem();
+
+
+/*========================================================
+  EXEMPLUL 2 - AMBIGUITATE LA METODE
+========================================================*/
+
+class A2 {
+public:
+    void f() {
+        std::cout
+            << "A2::f()\n";
+    }
+};
+
+class B2 : public A2 {
+};
+
+class C2 : public A2 {
+};
+
+class D2 : public B2,
+           public C2 {
+};
+
+void ex2_ambiguitate_metode() {
+
+    D2 d;
+
+    // d.f(); // EROARE
+
+    d.B2::f();
+    d.C2::f();
+}
+
+// ex2_ambiguitate_metode();
+
+
+/*========================================================
+  EXEMPLUL 3 - DOUĂ COPII ALE BAZEI
+========================================================*/
+
+class A3 {
+public:
+    A3() {
+        std::cout
+            << "Constructor A3\n";
+    }
+};
+
+class B3 : public A3 {
+};
+
+class C3 : public A3 {
+};
+
+class D3 : public B3,
+           public C3 {
+};
+
+void ex3_doua_copii_baza() {
+
+    D3 d;
+}
+
+/*
+Output:
+
+Constructor A3
+Constructor A3
+
+Există două copii ale lui A3.
+*/
+
+// ex3_doua_copii_baza();
+
+
+/*========================================================
+  EXEMPLUL 4 - REZOLVAREA CU MOȘTENIRE VIRTUALĂ
+========================================================*/
+
+class A4 {
+public:
+    int x = 100;
+};
+
+class B4 : virtual public A4 {
+};
+
+class C4 : virtual public A4 {
+};
+
+class D4 : public B4,
+           public C4 {
+};
+
+void ex4_virtual_inheritance() {
+
+    D4 d;
+
+    d.x = 50;
+
+    std::cout << d.x << '\n';
+}
+
+// ex4_virtual_inheritance();
+
+
+/*========================================================
+  EXEMPLUL 5 - O SINGURĂ COPIE A BAZEI
+========================================================*/
+
+class A5 {
+public:
+    A5() {
+        std::cout
+            << "Constructor A5\n";
+    }
+};
+
+class B5 : virtual public A5 {
+};
+
+class C5 : virtual public A5 {
+};
+
+class D5 : public B5,
+           public C5 {
+};
+
+void ex5_o_copie_baza() {
+
+    D5 d;
+}
+
+/*
+Output:
+
+Constructor A5
+
+Constructorul este apelat o singură dată.
+*/
+
+// ex5_o_copie_baza();
+
+
+/*========================================================
+  EXEMPLUL 6 - COMPARAȚIE
+========================================================*/
+
+class A6 {
+public:
+    int x = 1;
+};
+
+class B6 : public A6 {
+};
+
+class C6 : public A6 {
+};
+
+class D6 : public B6,
+           public C6 {
+};
+
+void ex6_fara_virtual() {
+
+    D6 d;
+
+    d.B6::x = 10;
+    d.C6::x = 20;
+
+    std::cout
+        << d.B6::x
+        << ' '
+        << d.C6::x
+        << '\n';
+}
+
+// ex6_fara_virtual();
+
+
+class A7 {
+public:
+    int x = 1;
+};
+
+class B7 : virtual public A7 {
+};
+
+class C7 : virtual public A7 {
+};
+
+class D7 : public B7,
+           public C7 {
+};
+
+void ex7_cu_virtual() {
+
+    D7 d;
+
+    d.x = 99;
+
+    std::cout
+        << d.x
+        << '\n';
+}
+
+// ex7_cu_virtual();
+
+
+/*========================================================
+  MAIN
+========================================================*/
+
+int main() {
+
+    // ex1_diamond_problem();
+
+    // ex2_ambiguitate_metode();
+
+    // ex3_doua_copii_baza();
+
+    // ex4_virtual_inheritance();
+
+    // ex5_o_copie_baza();
+
+    // ex6_fara_virtual();
+
+    // ex7_cu_virtual();
+
+    return 0;
+}

@@ -1,0 +1,426 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Tutoriat 4\\Modele statistice\\Recapitulare si exercitii}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Recapitulare}
+
+În acest tutoriat au fost prezentate principalele concepte utilizate pentru modelarea și gestionarea incertitudinii în Inteligența Artificială.
+
+\subsection{Variabile aleatoare}
+
+Variabilele aleatoare permit reprezentarea fenomenelor incerte.
+
+Exemple:
+
+\begin{itemize}
+\item Vreme;
+\item Boală;
+\item Trafic;
+\item Rezultatul unui test medical.
+\end{itemize}
+
+Fiecărei valori posibile îi este asociată o probabilitate.
+
+\subsection{Repartiții de probabilitate}
+
+O repartiție de probabilitate descrie probabilitățile tuturor valorilor unei variabile aleatoare.
+
+Proprietăți:
+
+\begin{itemize}
+\item probabilitățile sunt cuprinse între 0 și 1;
+\item suma probabilităților este egală cu 1.
+\end{itemize}
+
+\subsection{Repartiții marginale și condiționate}
+
+Repartițiile marginale se obțin prin eliminarea unor variabile dintr-o distribuție comună.
+
+\[
+P(X)
+=
+\sum_y P(X,y)
+\]
+
+Probabilitățile condiționate exprimă probabilități calculate în prezența unor informații suplimentare:
+
+\[
+P(A|B)
+\]
+
+\subsection{Inferența probabilistă}
+
+Inferența probabilistă reprezintă procesul de calcul al probabilităților necunoscute pe baza informațiilor disponibile.
+
+Metode studiate:
+
+\begin{itemize}
+\item inferența prin enumerare;
+\item formula de înmulțire;
+\item regula de înlănțuire;
+\item regula lui Bayes.
+\end{itemize}
+
+\subsection{Formula de înmulțire}
+
+\[
+P(A \cap B)
+=
+P(A|B)\cdot P(B)
+\]
+
+Aceasta permite calcularea probabilităților comune pornind de la probabilități condiționate.
+
+\subsection{Regula de înlănțuire}
+
+Pentru mai multe variabile:
+
+\[
+P(X_1,\dots,X_n)
+=
+\prod_{i=1}^{n}
+P(X_i|X_1,\dots,X_{i-1})
+\]
+
+Regula permite descompunerea distribuțiilor complexe în factori mai simpli.
+
+\subsection{Regula lui Bayes}
+
+\[
+P(A|B)
+=
+\frac
+{P(B|A)\cdot P(A)}
+{P(B)}
+\]
+
+Aceasta permite actualizarea probabilităților pe baza unor observații noi.
+
+\subsection{Independența}
+
+Două evenimente sunt independente dacă:
+
+\[
+P(A|B)
+=
+P(A)
+\]
+
+În acest caz, cunoașterea lui B nu oferă informații suplimentare despre A.
+
+\subsection{Independența condiționată}
+
+Două evenimente sunt independente condiționat de un al treilea eveniment dacă:
+
+\[
+P(A|B,C)
+=
+P(A|C)
+\]
+
+Această proprietate stă la baza Rețelelor Bayesiene.
+
+\subsection{Rețele Bayesiene}
+
+O Rețea Bayesiană este un graf orientat aciclic în care:
+
+\begin{itemize}
+\item nodurile reprezintă variabile aleatoare;
+\item muchiile reprezintă dependențe;
+\item fiecărui nod îi este asociat un tabel de probabilități condiționate.
+\end{itemize}
+
+Avantaje:
+
+\begin{itemize}
+\item reprezintă eficient incertitudinea;
+\item permit inferență probabilistă;
+\item reduc numărul de probabilități care trebuie memorate;
+\item exploatează independența condiționată.
+\end{itemize}
+
+\subsection{Idei de reținut}
+
+\begin{enumerate}
+\item Probabilitățile sunt utilizate pentru gestionarea incertitudinii.
+\item Variabilele aleatoare reprezintă fenomene incerte.
+\item Repartițiile descriu probabilitățile valorilor unei variabile.
+\item Probabilitățile condiționate folosesc informații suplimentare.
+\item Inferența probabilistă calculează probabilități necunoscute.
+\item Regula lui Bayes actualizează probabilitățile pe baza evidențelor observate.
+\item Independența condiționată permite simplificarea modelelor probabilistice.
+\item Rețelele Bayesiene reprezintă unul dintre cele mai importante modele probabilistice din Inteligența Artificială.
+\end{enumerate}
+
+\section{Exerciții}
+
+\subsection{Exercițiul 1 - Variabile aleatoare}
+
+Indicați care dintre următoarele reprezintă variabile aleatoare:
+
+\begin{enumerate}
+\item Vremea de mâine.
+\item Numărul de pe un zar.
+\item Un program C++.
+\item Rezultatul unui test medical.
+\end{enumerate}
+
+\subsection{Exercițiul 2 - Repartiție de probabilitate}
+
+Fie variabila:
+
+\[
+X \in \{A,B,C\}
+\]
+
+cu probabilitățile:
+
+\[
+P(A)=0.2
+\]
+
+\[
+P(B)=0.3
+\]
+
+\[
+P(C)=0.5
+\]
+
+Verificați dacă distribuția este validă.
+
+\subsection{Exercițiul 3 - Repartiție marginală}
+
+Considerăm distribuția comună:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Plouă & Trafic & Probabilitate \\
+\hline
+Da & Mare & 0.4 \\
+Da & Mic & 0.1 \\
+Nu & Mare & 0.2 \\
+Nu & Mic & 0.3 \\
+\hline
+\end{tabular}
+\end{center}
+
+Calculați:
+
+\[
+P(Ploua=Da)
+\]
+
+și
+
+\[
+P(Ploua=Nu)
+\]
+
+\subsection{Exercițiul 4 - Probabilitate condiționată}
+
+Se cunosc:
+
+\[
+P(A \cap B)=0.24
+\]
+
+\[
+P(B)=0.3
+\]
+
+Calculați:
+
+\[
+P(A|B)
+\]
+
+\subsection{Exercițiul 5 - Formula de înmulțire}
+
+Se cunosc:
+
+\[
+P(Ploaie)=0.3
+\]
+
+\[
+P(Trafic=Mare|Ploaie)=0.8
+\]
+
+Calculați:
+
+\[
+P(Trafic=Mare \cap Ploaie)
+\]
+
+\subsection{Exercițiul 6 - Regula lui Bayes}
+
+Se cunosc:
+
+\[
+P(Boala)=0.02
+\]
+
+\[
+P(TestPozitiv|Boala)=0.9
+\]
+
+\[
+P(TestPozitiv)=0.05
+\]
+
+Calculați:
+
+\[
+P(Boala|TestPozitiv)
+\]
+
+\subsection{Exercițiul 7 - Independență}
+
+Se cunosc:
+
+\[
+P(A)=0.5
+\]
+
+\[
+P(B)=0.4
+\]
+
+\[
+P(A \cap B)=0.2
+\]
+
+Determinați dacă A și B sunt independente.
+
+\subsection{Exercițiul 8 - Independență condiționată}
+
+Explicați diferența dintre:
+
+\begin{itemize}
+\item independență;
+\item independență condiționată.
+\end{itemize}
+
+Dați un exemplu pentru fiecare situație.
+
+\subsection{Exercițiul 9 - Rețele Bayesiene}
+
+Considerăm rețeaua:
+
+\begin{verbatim}
+Ploaie --> Trafic --> Intarziere
+\end{verbatim}
+
+Identificați:
+
+\begin{itemize}
+\item nodurile;
+\item muchiile;
+\item părintele variabilei Trafic;
+\item copilul variabilei Trafic.
+\end{itemize}
+
+\subsection{Exercițiul 10 - Recapitulare}
+
+Completați spațiile libere:
+
+\begin{enumerate}
+\item O variabilă aleatoare poate lua mai multe ............ .
+\item Suma probabilităților dintr-o distribuție este egală cu ............ .
+\item Probabilitatea condiționată se notează ............ .
+\item Formula lui Bayes permite actualizarea ............ .
+\item Rețelele Bayesiene sunt grafuri orientate ............ .
+\item Independența condiționată stă la baza ............ .
+\end{enumerate}
+
+\section{Răspunsuri exerciții}
+
+\begin{enumerate}
+
+\item Variabile aleatoare:
+Vremea, numărul de pe un zar, rezultatul unui test medical.
+
+\item Da, distribuția este validă deoarece:
+0.2 + 0.3 + 0.5 = 1.
+
+\item
+P(Ploua=Da)=0.4+0.1=0.5
+
+P(Ploua=Nu)=0.2+0.3=0.5
+
+\item
+P(A|B)=0.24/0.3=0.8
+
+\item
+$P(Trafic=Mare \cap Ploaie)=0.8 \cdot 0.3=0.24$
+
+\item
+P(Boala|TestPozitiv)=$\frac{0.9 \cdot 0.02}{0.05}$=0.36
+
+\item
+$P(A)\cdot P(B)=0.5\cdot0.4=0.2$
+
+Cum:
+
+$P(A\cap B)=0.2=0.5\cdot0.4$
+
+rezultă că A și B sunt independente.
+
+\item
+
+Independență:
+\[
+P(A|B)=P(A)
+\]
+
+Independență condiționată:
+\[
+P(A|B,C)=P(A|C)
+\]
+
+În primul caz evenimentele sunt independente în mod absolut, iar în al doilea devin independente după observarea lui C.
+
+\item
+
+Noduri:
+Ploaie, Trafic, Întârziere
+
+Muchii:
+Ploaie \\rightarrow Trafic,
+Trafic \\rightarrow Întârziere
+
+Părinte(Trafic):
+Ploaie
+
+Copil(Trafic):
+Întârziere
+
+\item
+
+\begin{enumerate}
+\item valori;
+\item 1;
+\item P(A|B);
+\item probabilităților;
+\item aciclice;
+\item Rețelelor Bayesiene.
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}

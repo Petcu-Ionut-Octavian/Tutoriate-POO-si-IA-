@@ -1,0 +1,308 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[romanian]{babel}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\geometry{margin=2.5cm}
+
+\title{Problema Diamantului în C++}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducere}
+
+Problema diamantului (Diamond Problem) reprezintă una dintre cele mai cunoscute dificultăți asociate moștenirii multiple.
+
+Aceasta apare atunci când o clasă moștenește indirect aceeași clasă de bază prin mai multe căi.
+
+Denumirea provine de la forma ierarhiei de clase:
+
+\begin{verbatim}
+        A
+       / \
+      B   C
+       \ /
+        D
+\end{verbatim}
+
+\section{Motivație}
+
+Considerăm o clasă de bază A.
+
+Clasele B și C moștenesc clasa A.
+
+Clasa D moștenește atât B cât și C.
+
+Astfel, D primește moștenirea lui A prin două căi diferite.
+
+\section{Exemplu clasic}
+
+\begin{verbatim}
+class A {
+public:
+    int x;
+};
+
+class B : public A {
+};
+
+class C : public A {
+};
+
+class D : public B, public C {
+};
+\end{verbatim}
+
+Grafic:
+
+\begin{verbatim}
+        A
+       / \
+      B   C
+       \ /
+        D
+\end{verbatim}
+
+\section{Problema}
+
+În clasa D există două copii ale clasei A:
+
+\begin{itemize}
+\item una moștenită prin B;
+\item una moștenită prin C.
+\end{itemize}
+
+Astfel:
+
+\begin{verbatim}
+D d;
+
+d.x = 10;
+\end{verbatim}
+
+produce eroare de compilare.
+
+Compilatorul nu știe la care membru x ne referim.
+
+\section{Ambiguitatea}
+
+Compilatorul observă două posibilități:
+
+\begin{verbatim}
+d.B::x
+\end{verbatim}
+
+sau
+
+\begin{verbatim}
+d.C::x
+\end{verbatim}
+
+Deoarece existența celor două căi produce ambiguitate, accesul direct nu este permis.
+
+\section{Demonstrație}
+
+\begin{verbatim}
+#include <iostream>
+
+class A {
+public:
+    int x = 10;
+};
+
+class B : public A {
+};
+
+class C : public A {
+};
+
+class D : public B, public C {
+};
+
+int main() {
+
+    D d;
+
+    d.x = 100;
+
+    return 0;
+}
+\end{verbatim}
+
+Compilatorul va genera eroare deoarece membrul x există de două ori.
+
+\section{Accesarea explicită}
+
+Ambiguitatea poate fi rezolvată temporar folosind operatorul de rezoluție.
+
+\begin{verbatim}
+D d;
+
+d.B::x = 10;
+
+d.C::x = 20;
+\end{verbatim}
+
+În acest caz specificăm explicit copia utilizată.
+
+\section{De ce este o problemă?}
+
+Problema nu apare doar pentru atribute.
+
+Ea apare și pentru:
+
+\begin{itemize}
+\item metode;
+\item constructori;
+\item variabile membre;
+\item orice alt membru moștenit.
+\end{itemize}
+
+Exemplu:
+
+\begin{verbatim}
+class A {
+public:
+    void f() {
+    }
+};
+\end{verbatim}
+
+În D vor exista două versiuni ale metodei f().
+
+\section{Soluția - Moștenirea Virtuală}
+
+C++ oferă o soluție numită moștenire virtuală.
+
+Ideea este ca toate clasele derivate să împartă aceeași copie a clasei de bază.
+
+\section{Sintaxa moștenirii virtuale}
+
+\begin{verbatim}
+class A {
+public:
+    int x;
+};
+
+class B : virtual public A {
+};
+
+class C : virtual public A {
+};
+
+class D : public B, public C {
+};
+\end{verbatim}
+
+Observăm utilizarea cuvântului cheie:
+
+\begin{verbatim}
+virtual
+\end{verbatim}
+
+în declarațiile claselor B și C.
+
+\section{Rezultatul}
+
+Acum există o singură copie a clasei A.
+
+Grafic:
+
+\begin{verbatim}
+          A
+         / \
+        /   \
+       B     C
+        \   /
+         \ /
+          D
+\end{verbatim}
+
+Din punct de vedere logic avem aceeași structură, dar în memorie există o singură instanță a lui A.
+
+\section{Exemplu complet}
+
+\begin{verbatim}
+#include <iostream>
+
+class A {
+public:
+    int x;
+};
+
+class B : virtual public A {
+};
+
+class C : virtual public A {
+};
+
+class D : public B, public C {
+};
+
+int main() {
+
+    D d;
+
+    d.x = 42;
+
+    std::cout << d.x;
+
+    return 0;
+}
+\end{verbatim}
+
+Programul compilează și funcționează corect.
+
+\section{Avantaje}
+
+Moștenirea virtuală:
+
+\begin{itemize}
+\item elimină ambiguitățile;
+\item elimină copiile multiple ale bazei;
+\item simplifică ierarhiile complexe;
+\item este soluția standard pentru Diamond Problem.
+\end{itemize}
+
+\section{Dezavantaje}
+
+\begin{itemize}
+\item implementare mai complexă;
+\item cost suplimentar la compilare;
+\item ierarhiile devin mai greu de urmărit.
+\end{itemize}
+
+\section{Recapitulare}
+
+Problema diamantului apare atunci când aceeași clasă de bază este moștenită prin mai multe căi.
+
+\begin{verbatim}
+        A
+       / \
+      B   C
+       \ /
+        D
+\end{verbatim}
+
+Consecința este existența a două copii ale clasei A în D.
+
+Soluția este utilizarea moștenirii virtuale:
+
+\begin{verbatim}
+class B : virtual public A { };
+
+class C : virtual public A { };
+\end{verbatim}
+
+Astfel, toate clasele împart aceeași copie a clasei de bază și ambiguitatea dispare.
+
+\end{document}
